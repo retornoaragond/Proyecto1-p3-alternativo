@@ -18,23 +18,74 @@ public class Actividad {
         this.entradas = null;
         this.salidas = null;
     }
+
+    public Actividad() {   
+    }
     
-    public Actividad(int name, int dtime, int IC, int TC, int IL, int TL, ArrayList<Relacion> entradas, ArrayList<Relacion> salidas) {
-        this.name = name;
-        this.dtime = dtime;
+    // </editor-fold>
+    
+    // <editor-fold desc="Metodos" defaultstate="collapsed">
+    public int getIC() {
+        return IC;
+    }
+
+    public void setIC(int IC) {
         this.IC = IC;
+    }
+
+    public int getTC() {
+        return TC;
+    }
+
+    public void setTC(int TC) {
         this.TC = TC;
+    }
+
+    public int getIL() {
+        return IL;
+    }
+
+    public void setIL(int IL) {
         this.IL = IL;
+    }
+
+    public int getTL() {
+        return TL;
+    }
+
+    public void setTL(int TL) {
         this.TL = TL;
+    }
+
+    public ArrayList<Relacion> getEntradas() {
+        return entradas;
+    }
+
+    public void setEntradas(ArrayList<Relacion> entradas) {
         this.entradas = entradas;
+    }
+
+    public ArrayList<Relacion> getSalidas() {
+        return salidas;
+    }
+
+    public void setSalidas(ArrayList<Relacion> salidas) {
         this.salidas = salidas;
+    }
+
+    public int getHolgura() {
+        return holgura;
+    }
+
+    public void setHolgura(int holgura) {
+        this.holgura = holgura;
     }
     // </editor-fold>
     
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     
-    private final int name;// nombre o sigla 
-    private final int dtime;//tiempo de duracion de la actividad
+    private int name;// nombre o sigla 
+    private int dtime;//tiempo de duracion de la actividad
     private int IC;//Inicio más cercano
     private int TC;//Término más cercano
     private int IL;//Inicio más lejano
