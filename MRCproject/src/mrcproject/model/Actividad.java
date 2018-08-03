@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Actividad {
     
     // <editor-fold desc="Constructores" defaultstate="collapsed">
-    public Actividad(int name, int dtime) {
+    public Actividad(char name, int dtime) {
         this.name = name;
         this.dtime = dtime;
         this.IC = -1;
@@ -18,13 +18,25 @@ public class Actividad {
         this.entradas = null;
         this.salidas = null;
     }
-
-    public Actividad() {   
-    }
     
     // </editor-fold>
-    
     // <editor-fold desc="Metodos" defaultstate="collapsed">
+     public char getName() {
+        return name;
+    }
+
+    public void setName(char name) {
+        this.name = name;
+    }
+
+    public int getDtime() {
+        return dtime;
+    }
+    
+    public void setDtime(int dtime) {    
+        this.dtime = dtime;
+    }
+
     public int getIC() {
         return IC;
     }
@@ -84,7 +96,7 @@ public class Actividad {
     
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     
-    private int name;// nombre o sigla 
+    private char name;// nombre o sigla 
     private int dtime;//tiempo de duracion de la actividad
     private int IC;//Inicio más cercano
     private int TC;//Término más cercano

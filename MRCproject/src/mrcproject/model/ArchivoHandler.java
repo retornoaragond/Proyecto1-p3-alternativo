@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mrcproject.model;
 
 import java.util.ArrayList;
@@ -14,34 +9,40 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author ExtremeTech
  */
-class ArchivoHandler extends DefaultHandler{
-    
+class ArchivoHandler extends DefaultHandler {
+
     public ArchivoHandler() {
     }
 
-    public ArchivoHandler(ArrayList<Relacion> relaciones, ArrayList<Actividad> actividades) {
-        this.relaciones = relaciones;
-        this.actividades = actividades;
+    public ArrayList<Relacion> getRelaciones() {
+        return relaciones;
     }
-    
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        super.endElement(uri, localName, qName); //To change body of generated methods, choose Tools | Templates.
+
+    public ArrayList<Actividad> getActividades() {
+        return actividades;
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        switch(qName){
+    public void startElement(String uri, String localName, String qName,
+            Attributes attributes) throws SAXException {
+        switch (qName) {
             case "datos":
                 break;
             case "Actividad":
-                //actividades=new Actividad();
+                actividad = new Actividad(attributes.getValue("id").charAt(0),
+                        Integer.parseInt(attributes.getValue("duracion")));
+                actividades.add(actividad);
                 break;
             case "Relacion":
+                relacion = new Relacion(attributes.getValue("sucesor").charAt(0),
+                        attributes.getValue("actividad").charAt(0));
+                relaciones.add(relacion);
                 break;
         }
     }
 
     private ArrayList<Relacion> relaciones;
     private ArrayList<Actividad> actividades;
+    private Actividad actividad;
+    private Relacion relacion;
 }

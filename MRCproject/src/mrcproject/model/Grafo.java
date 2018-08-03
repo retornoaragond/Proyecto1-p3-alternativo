@@ -1,18 +1,16 @@
 package mrcproject.model;
 
 import java.util.ArrayList;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  *
  * @author ExtremeTech
  */
-@XmlRootElement(name = "datos")
 public class Grafo {
     // <editor-fold desc="Constructores" defaultstate="collapsed">
-
+    public Grafo(ArrayList<Actividad> Actividades) {
+        this.Actividades = Actividades;
+    }
     // </editor-fold>
-    
     // <editor-fold desc="Metodos" defaultstate="collapsed">
     public int calculaholgura() {
         return 0;
