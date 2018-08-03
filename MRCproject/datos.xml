@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<datos>
+<Actividad id="A" duracion="6" />
+<Actividad id="B" duracion="8" />
+<Actividad id="C" duracion="12" />
+<Actividad id="D" duracion="4" />
+<Actividad id="E" duracion="6" />
+<Actividad id="F" duracion="15" />
+<Actividad id="G" duracion="12" />
+<Actividad id="H" duracion="8" />
+
+<Relacion actividad="A" sucesor="C"/>
+<Relacion actividad="B" sucesor="C"/>
+<Relacion actividad="C" sucesor="D"/>
+<Relacion actividad="C" sucesor="E"/>
+<Relacion actividad="D" sucesor="F"/>
+<Relacion actividad="E" sucesor="F"/>
+<Relacion actividad="E" sucesor="G"/>
+<Relacion actividad="F" sucesor="H"/>
+<Relacion actividad="G" sucesor="H"/>
+</datos>
