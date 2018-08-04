@@ -1,4 +1,5 @@
 package mrcproject.model;
+
 import java.util.ArrayList;
 
 /**
@@ -6,34 +7,34 @@ import java.util.ArrayList;
  * @author ExtremeTech
  */
 public class Actividad {
-    
+
     // <editor-fold desc="Constructores" defaultstate="collapsed">
-    public Actividad(char name, int dtime) {
+    public Actividad(String name, int dtime) {
         this.name = name;
         this.dtime = dtime;
         this.IC = -1;
         this.TC = -1;
         this.IL = -1;
         this.TL = -1;
-        this.entradas = null;
-        this.salidas = null;
+        this.entradas = new ArrayList<>();
+        this.salidas = new ArrayList<>();
     }
-    
+
     // </editor-fold>
     // <editor-fold desc="Metodos" defaultstate="collapsed">
-     public char getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(char name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     public int getDtime() {
         return dtime;
     }
-    
-    public void setDtime(int dtime) {    
+
+    public void setDtime(int dtime) {
         this.dtime = dtime;
     }
 
@@ -92,11 +93,32 @@ public class Actividad {
     public void setHolgura(int holgura) {
         this.holgura = holgura;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder().append("   ").append(getName()).append("\t\t(").append(getDtime()).append(")\t\t");
+        if (!salidas.isEmpty()) {
+            salidas.forEach((Relacion r) -> {
+                str.append(r.getDestino()).append(". ");
+            });
+        }else{
+            str.append("-");
+        }
+        str.append("\t\t");
+        if (!entradas.isEmpty()) {
+            entradas.forEach((Relacion r) -> {
+                str.append(r.getSalida()).append(". ");
+            });
+        }else{
+            str.append("-");
+        }
+        str.append("\n");
+        return str.toString();
+    }
+
     // </editor-fold>
-    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
-    
-    private char name;// nombre o sigla 
+    private String name;// nombre o sigla 
     private int dtime;//tiempo de duracion de la actividad
     private int IC;//Inicio más cercano
     private int TC;//Término más cercano
@@ -105,6 +127,6 @@ public class Actividad {
     private ArrayList<Relacion> entradas;//lista para las entradas
     private ArrayList<Relacion> salidas;//lista para las salidas
     private int holgura;//tiempo de retraso para no atrasar el proyecto
-    
+
     // </editor-fold>
 }

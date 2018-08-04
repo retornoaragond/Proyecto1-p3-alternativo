@@ -8,7 +8,7 @@ public class Relacion {
 
     // <editor-fold desc="Constructores" defaultstate="collapsed">
     
-    public Relacion(char destino, char salida) {
+    public Relacion(String salida, String destino) {
         this.destino = destino;
         this.salida = salida;
     }
@@ -18,26 +18,26 @@ public class Relacion {
     // </editor-fold>
 
     // <editor-fold desc="Metodos" defaultstate="collapsed">
-    public char getDestino() {
+    public String getDestino() {
         return destino;
     }
 
-    public void setDestino(char destino) {
+    public void setDestino(String destino) {
         this.destino = destino;
     }
 
-    public char getSalida() {
+    public String getSalida() {
         return salida;
     }
     
-    public void setSalida(char salida) {
+    public void setSalida(String salida) {
         this.salida = salida;
     }
     
     // </editor-fold>
 
     // <editor-fold desc="Atributos" defaultstate="collapsed">
-    private char destino;
-    private char salida;
+    private String destino;
+    private String salida;
     // </editor-fold>
 }

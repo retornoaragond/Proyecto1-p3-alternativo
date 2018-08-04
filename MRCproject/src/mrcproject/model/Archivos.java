@@ -1,12 +1,15 @@
 package mrcproject.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.SAXException;
+import java.util.HashMap;
+import java.io.File;
+import java.util.Map;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -17,34 +20,43 @@ public class Archivos {
     public Archivos() {
     }
 
-    public ArrayList<Actividad> carga(String name) throws ParserConfigurationException, SAXException, IOException {
-        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        SAXParser saxParser = saxParserFactory.newSAXParser();
-        File file = new File("datos.xml");
-        ArchivoHandler handler = new ArchivoHandler();
-        saxParser.parse(file, handler);
-        asociacion(handler.getActividades(), handler.getRelaciones());//acomoda las relaciondes en las entradas y salidas de las actividades 
-        return handler.getActividades();
-    }
+    public HashMap<String, Actividad> carga(String path) throws Exception {
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document doc = docBuilder.parse(new File(path));
+        doc.getDocumentElement().normalize();
+        HashMap actividades = new HashMap();
+        ArrayList<Relacion> relaciones = new ArrayList();
 
-    public void asociacion(ArrayList<Actividad> act, ArrayList<Relacion> rel) {
-        //asigna los elementos de las relacioens a cada actividad correspondiente
-        Actividad a;
-        for (Relacion r : rel) {
-            a = busca_actividad(act, r.getSalida());
-            a.getSalidas().add(r);
-            a = busca_actividad(act, r.getDestino());
-            a.getEntradas().add(r);
-        }
-    }
-
-    public Actividad busca_actividad(ArrayList<Actividad> act, char name) {
-        //busca la actividad segun el nombre que recive
-        for (Actividad a : act) {
-            if (a.getName() == name) {
-                return a;
+        NodeList as = doc.getElementsByTagName("Actividad");
+        for (int i = 0; i < as.getLength(); i++) {
+            Node n = as.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                Element a = (Element) n;
+                actividades.put(a.getAttribute("id"), new Actividad(a.getAttribute("id"), Integer.parseInt(a.getAttribute("duracion"))));
             }
         }
-        return null;
+
+        as = doc.getElementsByTagName("Relacion");
+        for (int i = 0; i < as.getLength(); i++) {
+            Node n = as.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                Element a = (Element) n;
+                relaciones.add(new Relacion(a.getAttribute("actividad"), a.getAttribute("sucesor")));
+            }
+        }
+        asociacion(actividades, relaciones);
+        return (HashMap)actividades;
+    }
+
+    public void asociacion(HashMap<String, Actividad> actividades, ArrayList<Relacion> rel) {
+        //asigna los elementos de las relaciones a cada actividad correspondiente
+        Actividad a;
+        for (Relacion r : rel) {
+            a = actividades.get(r.getSalida());
+            a.getSalidas().add(r);
+            a = actividades.get(r.getDestino());
+            a.getEntradas().add(r);
+        }
     }
 }
