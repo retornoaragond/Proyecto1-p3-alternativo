@@ -3,7 +3,6 @@ package mrcproject.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.File;
-import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -33,7 +32,8 @@ public class Archivos {
             Node n = as.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element a = (Element) n;
-                actividades.put(a.getAttribute("id"), new Actividad(a.getAttribute("id"), Integer.parseInt(a.getAttribute("duracion"))));
+                actividades.put(a.getAttribute("id"), new Actividad(a.getAttribute("id"), 
+                        Integer.parseInt(a.getAttribute("duracion"))));
             }
         }
 

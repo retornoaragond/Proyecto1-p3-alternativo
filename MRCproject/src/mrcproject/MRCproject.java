@@ -11,8 +11,11 @@ import mrcproject.model.Proyecto;
 public class MRCproject {
 
     public static void main(String[] args) throws Exception {
-        Proyecto prueba = new Proyecto(new Archivos().carga("datos.xml"));
-        System.out.print(prueba.toString());
+        Proyecto prueba = new Proyecto(new Archivos().carga("datos.xml"));//carga el archivo
+        //System.out.print(prueba.toString());// se imprime lo cargado
+        prueba.add_inicio();
+        prueba.add_final();
+        System.out.print(prueba.toString());// se imprime lo cargado
     }
     
 }
