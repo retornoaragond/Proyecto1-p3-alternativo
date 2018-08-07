@@ -24,136 +24,51 @@ public class Proyecto {
     }
 
     public void calculaholgura() {
-
-       // calcular_IC_TC();
+        calcular_IC_TC();
         calcular_IL_TL();
 
     }
-    /*
-    public void calculaICTc(){
-    //Actividad n_inicio = new Actividad("n_inicio", 0);
-       
-    String ini="n_inicio";
-         String salida;
-        Set<String> keys = actividades.keySet();
-        Actividad a;
-        Relacion r;
-        for (String key : keys) {
-           // poner validacion 
-            a = actividades.get(key);
-             if (a.getEntradas().get(0).getSalida()=="n_inicio") 
-              for(int j=0;j < a.getEntradas().size();j++){
-             r= a.getEntradas().get(j);//atrapo a  salidas de a                 salida i dst a
-             salida=r.getSalida();
-             desti =r.getDestino();  //a
-              n=actividades.get(salida);// busco destino de i
-        }
-        }
-    }
-    
-    
-    */
-    
-    
+
     public void calcular_IC_TC() {
-       
-        int aux=0;
-        String desti,salida;
-        
-        
         ArrayList<Actividad> visitados = new ArrayList();
-        List<Actividad> pila;
-        List<Actividad> cola;
-        
-        Actividad n,nn ;
-        Set<String> keys = actividades.keySet();
-        Actividad a;
-        Relacion r;
-        for (String key : keys) {
-           // poner validacion 
-            a = actividades.get(key);
-            
-            if (a.getEntradas().isEmpty()) {
-             //for(int j=0;j < a.getSalidas().size();j++){
-              for(int j=0;j < a.getEntradas().size();j++){
-              
-              r= a.getEntradas().get(j);//atrapo a  salidas de a                 salida i dst a
-             salida=r.getSalida();
-             desti =r.getDestino();  //a
-              n=actividades.get(salida);// busco destino de i
-              
-              nn=actividades.get(desti);// busco ic de i 
-             
-              nn.setIC(n.getTC());
-              nn.setTC(aux=nn.getIC()+nn.getDtime());
-              visitados.add(nn);
-              }
-              
-              
+        List<Actividad> cola = new ArrayList<>();
+        Actividad inicio = actividades.get("n_inicio");
+        Actividad temp;
+        add_cola(inicio, cola);
+        visitados.add(inicio);
+        while (!cola.isEmpty()) {
+            temp = cola.remove(0);
+            visitados.add(temp);
+            temp.setIC(buscamayor(temp));
+            temp.setTC(temp.getIC() + temp.getDtime());
+            add_cola(temp, cola);
         }
-            System.out.println("se cayo");  
-        }
+    }
+
+    public void calcular_IL_TL() {
         
     }
-             
     
-    
-        
-   
-        
-        
-        
-        
-        
-        
-        /*
-        Set<String> keys = actividades.keySet();
-        Actividad a;
-        Relacion r;
-        //for (int i=0;i<actividades.size();i++) {
-            for (String key : keys) {
-            a = actividades.get(key);
-            a.getEntradas();
-             
-            
-            // destino=a.getNombre();
-                
-           
-            
-            a = actividades.get(keys);
-           a.setTC(aux=a.getIC()+a.getDtime());
-           visitados.add(a);
-        
+    public void add_cola(Actividad a,List<Actividad> cola){
+        Actividad temp;
+        for (Relacion relini : a.getSalidas()) {
+            temp = actividades.get(relini.getDestino());
+            cola.add(temp);
         }
-         
     }
-   
-    */
-    
 
-   
-        
-      public void calcular_IL_TL() {
+    public int buscamayor(Actividad act) {
+        int mayor = 0;
+        Actividad temp;
+        for (Relacion r : act.getEntradas()) {
+            temp = actividades.get(r.getSalida());
+            if (mayor <= temp.getTC()) {
+                mayor = temp.getTC();
+            }
+        }
+        return mayor;
+    }
 
-      }
-
-      public Actividad getActividad(String name){
-       //List<Actividad> actividades;
-       Actividad aa= new Actividad("",0);
-       Set<String> keys = actividades.keySet();   
-      
-     
-    return null;
-      }
-
-
-     
-      
-
-      
-      
-      
-      
     public void add_inicio() {
         Actividad n_inicio = new Actividad("n_inicio", 0);
         Set<String> keys = actividades.keySet();
@@ -183,7 +98,7 @@ public class Proyecto {
                 a.getSalidas().add(r);
             }
         }
-       actividades.put("n_final", n_final);
+        actividades.put("n_final", n_final);
     }
 
     @Override
@@ -192,6 +107,14 @@ public class Proyecto {
         str = new StringBuilder().append("Actividad     Duracion      Siguiente        Anterior \n");
         actividades.forEach((k, v)
                 -> str.append(v.toString()));
+        return str.toString();
+    }
+    
+    public String Prueba_inicial(){
+        StringBuilder str;
+        str = new StringBuilder().append("id\ttiempo\tIC\tTC\n");
+        actividades.forEach((k, v)
+                -> str.append(v.Prueba_inicial()).append("\n"));
         return str.toString();
     }
 

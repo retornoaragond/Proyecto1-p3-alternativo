@@ -1,7 +1,6 @@
 package mrcproject.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
@@ -124,6 +123,12 @@ public class Actividad {
         return str.toString();
     }
     
+    public String Prueba_inicial(){
+        StringBuilder str = new StringBuilder();
+        str.append(this.name).append("\t").append(this.dtime).append("\t").append(this.IC).append("\t").append(this.TC);
+        return str.toString();
+    }
+    
     
     
     // </editor-fold>
@@ -136,7 +141,6 @@ public class Actividad {
     private int TL;//Término más lejano
     private ArrayList<Relacion> entradas;//predecesor          lista para las entradas
     private ArrayList<Relacion> salidas;// sucesor            //lista para las salidas
-    //private HashMap<String,Actividad> predecesor;
     private int holgura;//tiempo de retraso para no atrasar el proyecto
 
     // </editor-fold>
