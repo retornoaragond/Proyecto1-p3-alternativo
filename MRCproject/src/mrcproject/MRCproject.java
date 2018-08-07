@@ -15,6 +15,7 @@ public class MRCproject {
         //System.out.print(prueba.toString());// se imprime lo cargado
         prueba.add_inicio();
         prueba.add_final();
+        prueba.calcular_IC_TC();
         System.out.print(prueba.toString());// se imprime lo cargado
     }
     
