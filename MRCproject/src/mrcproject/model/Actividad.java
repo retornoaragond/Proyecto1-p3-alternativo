@@ -125,7 +125,7 @@ public class Actividad {
     
     public String Prueba_inicial(){
         StringBuilder str = new StringBuilder();
-        str.append(this.name).append("\t").append(this.dtime).append("\t").append(this.IC).append("\t").append(this.TC);
+        str.append(this.name).append("\t").append(this.dtime).append("\t").append(this.IC).append("\t").append(this.TC).append("\t").append(this.TL).append("\t").append(this.IL).append("\t").append(this.holgura);
         return str.toString();
     }
     

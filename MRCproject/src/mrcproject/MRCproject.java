@@ -17,6 +17,9 @@ public class MRCproject {
         prueba.add_final();
         //System.out.print(prueba.toString());// se imprime lo cargado
         prueba.calcular_IC_TC();
+        prueba.calcular_IL_TL();
+        prueba.calculaholgura();
+        prueba.rutaCritica();
         System.out.print(prueba.Prueba_inicial());// se imprime lo cargado
         
     }
