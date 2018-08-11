@@ -13,14 +13,12 @@ public class Actividad {
         this.name = name;
         this.dtime = dtime;
         this.IC = 0;
-        this.TC = 0;
         this.IL = 0;
-        this.TL = 0;
         this.entradas = new ArrayList<>();
         this.salidas = new ArrayList<>();
     }
     // </editor-fold>
-    
+
     // <editor-fold desc="Metodos" defaultstate="collapsed">
     public String getName() {
         return name;
@@ -43,31 +41,23 @@ public class Actividad {
     }
 
     public int getTC() {
-        return TC;
+        return this.IC + this.dtime;
     }
 
     public void setIC(int IC) {
         this.IC = IC;
     }
 
-    public void setTC(int TC) {
-        this.TC = TC;
-    }
-
     public void setIL(int IL) {
         this.IL = IL;
     }
-    
-    public void setTL(int TL) {
-        this.TL = TL;
-    }
-    
+
     public int getIL() {
         return IL;
     }
 
     public int getTL() {
-        return TL;
+        return this.IL + this.dtime;
     }
 
     public ArrayList<Actividad> getEntradas() {
@@ -87,11 +77,7 @@ public class Actividad {
     }
 
     public int getHolgura() {
-        return holgura;
-    }
-
-    public void setHolgura(int holgura) {
-        this.holgura = holgura;
+        return this.IL - this.IC;
     }
 
     @Override
@@ -100,27 +86,23 @@ public class Actividad {
         //hacer el toString
         return str.toString();
     }
-    
-    public String Prueba_inicial(){
+
+    public String Prueba_inicial() {
         StringBuilder str = new StringBuilder();
         str.append(this.name).append("\t").append(this.dtime).append("\t").append(this.IC)
-                .append("\t").append(this.TC).append("\t").append(this.TL).append("\t")
-                .append(this.IL).append("\t").append(this.holgura);
+                .append("\t").append(this.getTC()).append("\t").append(this.IL).append("\t")
+                .append(this.getTL()).append("\t").append(this.getHolgura());
         return str.toString();
     }
-    
+
     // </editor-fold>
     
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private String name;// nombre o sigla 
     private int dtime;//tiempo de duracion de la actividad
     private int IC;//Inicio más cercano
-    private int TC;//Término más cercano
     private int IL;//Inicio más lejano
-    private int TL;//Término más lejano
     private ArrayList<Actividad> entradas;//predecesor          lista para las entradas
     private ArrayList<Actividad> salidas;// sucesor             lista para las salidas
-    private int holgura;//tiempo de retraso para no atrasar el proyecto
-
     // </editor-fold>
 }

@@ -14,8 +14,8 @@ public class MRCproject {
         Proyecto prueba = new Proyecto(new Archivos().carga("datos.xml"));//carga el archivo
         prueba.add_inicio();
         prueba.add_final();
-        prueba.calculaholgura();
-        //prueba.rutaCritica();
+        //prueba.calculaholgura();
+        prueba.rutaCritica();
         System.out.print(prueba.Prueba_inicial());// se imprime lo cargado
         
     }
