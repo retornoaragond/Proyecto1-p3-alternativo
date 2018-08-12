@@ -67,6 +67,7 @@ public class Proyecto {
         ArrayList<Actividad> visitados = new ArrayList();
         List<Actividad> cola = new ArrayList<>();
         Actividad temp;
+        n_f.setIL(n_f.getIC());
         add_colaF(n_f, cola);
         visitados.add(n_f);
         while (!cola.isEmpty()) {
@@ -108,10 +109,10 @@ public class Proyecto {
     }
 
     public int buscamenor(Actividad act) {
-        int menor = 0;
+        int menor = Integer.MAX_VALUE;
         for (Actividad a : act.getSalidas()) {
-            if (menor <= a.getIC()) {
-                menor = a.getIC();
+            if (menor >= a.getIL()) {
+                menor = a.getIL();
             }
         }
         return menor;
@@ -183,7 +184,7 @@ public class Proyecto {
 
     public String Prueba_inicial() {
         StringBuilder str;
-        str = new StringBuilder().append("id\ttiempo\tIC\tTC\tTL\tIL\tholgura\n");
+        str = new StringBuilder().append("id\ttiempo\tIC\tTC\tIL\tTL\tholgura\n");
         actividades.forEach((k, v)
                 -> str.append(v.Prueba_inicial()).append("\n"));
         return str.toString();
