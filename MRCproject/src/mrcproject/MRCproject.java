@@ -12,9 +12,7 @@ public class MRCproject {
 
     public static void main(String[] args) throws Exception {
         Proyecto prueba = new Proyecto(new Archivos().carga("datos3.xml"));//carga el archivo
-        prueba.add_inicio();
-        prueba.add_final();
-        prueba.rutaCritica();
+        System.out.print("\n"+prueba.rutaCritica()+"\n\n");// se imprime lo cargado
         System.out.print(prueba.Prueba_inicial());// se imprime lo cargado
         
     }

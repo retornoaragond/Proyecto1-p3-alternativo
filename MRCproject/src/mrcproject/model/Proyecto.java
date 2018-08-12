@@ -1,6 +1,7 @@
 package mrcproject.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -25,24 +26,82 @@ public class Proyecto {
     }
 
     // <editor-fold desc="Ruta Critica" defaultstate="collapsed">
-    public List<Actividad> rutaCritica() {
+    public String rutaCritica() {
+        add_inicio();
+        add_final();
         if (!hay_ciclo()) {
             calcular_IC();
             calcular_IL();
+//            ArrayList<Actividad> ruta = new ArrayList<>();
+//            CPM(ruta, n_i);//metodo solo funciona si solo hay una ruta critica
+//            return ruta(ruta); 
+            ArrayList<ArrayList<Actividad>> rutas = new ArrayList<>();//lista de listas para las rutas
+            CPM2(rutas, n_f, 0);//metodo para N rutas criticas
+            reverse(rutas);//metodo da vuelta a las rutas ya que estan al reves
+            return ruta2(rutas);
         } else {
             System.out.println("Error: Hay un Ciclo en el grafo");
         }
         return null;
-//        Actividad inicio = actividades.get("n_inicio");
-//        Actividad a;
-//
-//        List<Actividad> ruta = new ArrayList<>();
-//        add_cola(inicio, ruta);
-//        while (!ruta.isEmpty() && inicio.getHolgura() == 0) {
-//            a = ruta.remove(0);
-//            add_cola(a, ruta);
-//        }
-//        return ruta.subList(0, ruta.size());
+    }
+
+    public void CPM(ArrayList<Actividad> ruta, Actividad a) {//metodo para una sola ruta critica
+        for (Actividad temp : a.getSalidas()) {
+            if (!("n_f".equals(temp.getName()))) {//si ees el nodo final no lo toma en cuenta
+                if (temp.getHolgura() == 0) {
+                    ruta.add(temp);
+                    CPM(ruta, temp);
+                }
+            }
+        }
+    }
+
+    public void CPM2(ArrayList<ArrayList<Actividad>> rutas, Actividad a, int ruta) {//metodo para N rutas criticas empezando desde el final
+        int part = 0;//bandera para saber si hay mas caminos que llega a un nodo
+        for (Actividad temp : a.getEntradas()) {
+            if (!("n_i".equals(temp.getName()))) {//si es el nodo inicial no lo toma encuenta 
+                if (temp.getHolgura() == 0) {
+                    if ("n_f".equals(a.getName())) {//si son predecesores de el final crea una ruta por cada uno
+                        ArrayList<Actividad> tempL = new ArrayList<>();
+                        tempL.add(temp);
+                        rutas.add(tempL);
+                        CPM2(rutas, temp, rutas.size() - 1);//llamado recursivo
+                    } else {
+                        if (cant_cami(a) < 2) {//si sus antecesorees con hogura 0 es menor a 1
+                            rutas.get(ruta).add(temp);//lo ingresa en esa lista
+                            CPM2(rutas, temp, ruta);//llamad recursivo
+                        } else {
+                            if (part == 0) {//si es el primer de los nodos antecesores  
+                                ArrayList<Actividad> tempL2 = (ArrayList) rutas.get(ruta).clone();//crea una copia de la ruta actual
+                                rutas.add(tempL2);//la copia la ingresa en un nuevo lugar
+                                rutas.get(ruta).add(temp);//ingresa el primero antecesor
+                                CPM2(rutas, temp, ruta);//llamado recursivo
+                                part++;//cambia la bandera para ingresar cambiar de ruta
+                            } else {
+                                rutas.get(++ruta).add(temp);//ingresa en la ruta copiada anteriormente
+                                CPM2(rutas, temp, rutas.size() - 1);//llamado recursivo
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public int cant_cami(Actividad a) {//cuenta la cantidad de nodos antecesores que tiene holgura 0
+        int n = 0;
+        for (Actividad temp : a.getEntradas()) {
+            if (temp.getHolgura() == 0) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    public void reverse(ArrayList<ArrayList<Actividad>> rutas) {//da vuelta a las rutas ya que estan invertidas
+        rutas.forEach((list) -> {
+            Collections.reverse(list);
+        });
     }
 
     public void calcular_IC() {
@@ -189,10 +248,30 @@ public class Proyecto {
                 -> str.append(v.Prueba_inicial()).append("\n"));
         return str.toString();
     }
+
+    public String ruta(ArrayList<Actividad> a) {
+        StringBuilder str;
+        str = new StringBuilder().append("Ruta Critica: ");
+        a.forEach((v)
+                -> str.append(v.getName()).append("->"));
+        str.append("\n");
+        return str.toString();
+    }
+
+    public String ruta2(ArrayList<ArrayList<Actividad>> rutas) {
+        StringBuilder str;
+        str = new StringBuilder().append("Ruta Critica: \n");
+        for (ArrayList<Actividad> list : rutas) {
+            for (Actividad a : list) {
+                str.append("->").append(a.getName());
+            }
+            str.append("\n");
+        }
+        return str.toString();
+    }
     // </editor-fold>
 
     // </editor-fold>
-    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private final HashMap<String, Actividad> actividades;//lista para las entradas
     Actividad n_i;
