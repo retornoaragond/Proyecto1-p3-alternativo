@@ -3,8 +3,8 @@ package mrcproject.model;
 import java.util.ArrayList;
 
 /**
- *
- * @author ExtremeTech
+ * @author Esteban Espinoza Fallas
+ * @author Carlos Vargas Alfaro
  */
 public class Actividad {
 
@@ -83,12 +83,6 @@ public class Actividad {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        //hacer el toString
-        return str.toString();
-    }
-
-    public String Prueba_inicial() {
-        StringBuilder str = new StringBuilder();
         str.append(this.name).append("\t").append(this.dtime).append("\t").append(this.IC)
                 .append("\t").append(this.getTC()).append("\t").append(this.IL).append("\t")
                 .append(this.getTL()).append("\t").append(this.getHolgura());
@@ -102,7 +96,7 @@ public class Actividad {
     private int dtime;//tiempo de duracion de la actividad
     private int IC;//Inicio más cercano
     private int IL;//Inicio más lejano
-    private ArrayList<Actividad> entradas;//predecesor          lista para las entradas
-    private ArrayList<Actividad> salidas;// sucesor             lista para las salidas
+    private ArrayList<Actividad> entradas;//predecesor          lista para los Antecesores
+    private ArrayList<Actividad> salidas;// sucesor             lista para los Sucesores
     // </editor-fold>
 }

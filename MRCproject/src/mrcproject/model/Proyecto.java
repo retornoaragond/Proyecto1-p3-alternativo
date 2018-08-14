@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
- * @author ExtremeTech
+ * @author Esteban Espinoza Fallas
+ * @author Carlos Vargas Alfaro
  */
 public class Proyecto {
 
@@ -32,28 +32,14 @@ public class Proyecto {
         if (!hay_ciclo()) {
             calcular_IC();
             calcular_IL();
-//            ArrayList<Actividad> ruta = new ArrayList<>();
-//            CPM(ruta, n_i);//metodo solo funciona si solo hay una ruta critica
-//            return ruta(ruta); 
             ArrayList<ArrayList<Actividad>> rutas = new ArrayList<>();//lista de listas para las rutas
             CPM2(rutas, n_f, 0);//metodo para N rutas criticas
             reverse(rutas);//metodo da vuelta a las rutas ya que estan al reves
-            return ruta2(rutas);
+            return ruta(rutas);
         } else {
             System.out.println("Error: Hay un Ciclo en el grafo");
         }
         return null;
-    }
-
-    public void CPM(ArrayList<Actividad> ruta, Actividad a) {//metodo para una sola ruta critica
-        for (Actividad temp : a.getSalidas()) {
-            if (!("n_f".equals(temp.getName()))) {//si ees el nodo final no lo toma en cuenta
-                if (temp.getHolgura() == 0) {
-                    ruta.add(temp);
-                    CPM(ruta, temp);
-                }
-            }
-        }
     }
 
     public void CPM2(ArrayList<ArrayList<Actividad>> rutas, Actividad a, int ruta) {//metodo para N rutas criticas empezando desde el final
@@ -180,7 +166,6 @@ public class Proyecto {
 
     // <editor-fold desc="Agregadores" defaultstate="collapsed">
     public void add_inicio() {
-        //this.n_i = new Actividad("n_inicio", 0);
         Set<String> keys = actividades.keySet();
         Actividad a;
         for (String key : keys) {
@@ -190,7 +175,6 @@ public class Proyecto {
                 a.getEntradas().add(this.n_i);
             }
         }
-        //actividades.put("n_i", this.n_i); //agrega la actividad
     }
 
     public void add_final() {
@@ -203,7 +187,6 @@ public class Proyecto {
                 a.getSalidas().add(this.n_f);
             }
         }
-        //actividades.put("n_f", this.n_f);
     }
     // </editor-fold>
 
@@ -245,20 +228,11 @@ public class Proyecto {
         StringBuilder str;
         str = new StringBuilder().append("id\ttiempo\tIC\tTC\tIL\tTL\tholgura\n");
         actividades.forEach((k, v)
-                -> str.append(v.Prueba_inicial()).append("\n"));
+                -> str.append(v.toString()).append("\n"));
         return str.toString();
     }
 
-    public String ruta(ArrayList<Actividad> a) {
-        StringBuilder str;
-        str = new StringBuilder().append("Ruta Critica: ");
-        a.forEach((v)
-                -> str.append(v.getName()).append("->"));
-        str.append("\n");
-        return str.toString();
-    }
-
-    public String ruta2(ArrayList<ArrayList<Actividad>> rutas) {
+    public String ruta(ArrayList<ArrayList<Actividad>> rutas) {
         StringBuilder str;
         str = new StringBuilder().append("Ruta Critica: \n");
         for (ArrayList<Actividad> list : rutas) {
@@ -272,6 +246,7 @@ public class Proyecto {
     // </editor-fold>
 
     // </editor-fold>
+    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private final HashMap<String, Actividad> actividades;//lista para las entradas
     Actividad n_i;

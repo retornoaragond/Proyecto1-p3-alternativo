@@ -9,6 +9,11 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
+/**
+ * @author Esteban Espinoza Fallas
+ * @author Carlos Vargas Alfaro
+ */
+
 public class Archivos {
 
     public Archivos() {
