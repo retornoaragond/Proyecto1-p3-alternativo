@@ -15,15 +15,16 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * @author Esteban Espinoza Fallas
- * @author Carlos Vargas Alfaro
+ * @author Esteban Espinoza Fallas  402290345
+ * @author Carlos Vargas Alfaro     402170927
  */
+
 public class Archivos {
 
-    public Archivos() {
+    public Archivos(){
     }
 
-    public HashMap<String, Actividad> carga(String path) {
+    public HashMap<String, Actividad> carga(String path) {// método que carga el archivo xml con las actividades
         try {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

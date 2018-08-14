@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author Esteban Espinoza Fallas
- * @author Carlos Vargas Alfaro
+ * @author Esteban Espinoza Fallas 402290345
+ * @author Carlos Vargas Alfaro 402170927
  */
 public class Proyecto {
 
@@ -26,15 +26,15 @@ public class Proyecto {
     }
 
     // <editor-fold desc="Ruta Critica" defaultstate="collapsed">
-    public String rutaCritica() {
+    public String rutaCritica() { //método que retorna la o las rutas críticas del proyecto
         add_inicio();
         add_final();
         if (!hay_ciclo()) {
             calcular_IC();
             calcular_IL();
             ArrayList<ArrayList<Actividad>> rutas = new ArrayList<>();//lista de listas para las rutas
-            CPM(rutas, n_f, 0);//metodo para N rutas criticas
-            reverse(rutas);//metodo da vuelta a las rutas ya que estan al reves
+            CPM(rutas, n_f, 0);//método para N rutas criticas
+            reverse(rutas);   //método que invierte las rutas ya que estan al revés
             return ruta(rutas);
         } else {
             System.out.println("Error: Hay un Ciclo en el grafo");
@@ -42,12 +42,12 @@ public class Proyecto {
         return null;
     }
 
-    public void CPM(ArrayList<ArrayList<Actividad>> rutas, Actividad a, int ruta) {//metodo para N rutas criticas empezando desde el final
-        int part = 0;//bandera para saber si hay mas caminos que llega a un nodo
+    public void CPM(ArrayList<ArrayList<Actividad>> rutas, Actividad a, int ruta) {//método que calcula N rutas críticas empezando desde el final
+        int part = 0;//bandera para saber si hay más caminos que llega a un nodo
         for (Actividad temp : a.getEntradas()) {
             if (!("n_i".equals(temp.getName()))) {//si es el nodo inicial no lo toma encuenta 
                 if (temp.getHolgura() == 0) {
-                    if ("n_f".equals(a.getName())) {//si son predecesores de el final crea una ruta por cada uno
+                    if ("n_f".equals(a.getName())) {//si son predecesores del final crea una ruta por cada uno
                         ArrayList<Actividad> tempL = new ArrayList<>();
                         tempL.add(temp);
                         rutas.add(tempL);
@@ -60,7 +60,7 @@ public class Proyecto {
                             if (part == 0) {//si es el primer de los nodos antecesores  
                                 ArrayList<Actividad> tempL2 = (ArrayList) rutas.get(ruta).clone();//crea una copia de la ruta actual
                                 rutas.add(tempL2);//la copia la ingresa en un nuevo lugar
-                                rutas.get(ruta).add(temp);//ingresa el primero antecesor
+                                rutas.get(ruta).add(temp);//ingresa el primer antecesor
                                 CPM(rutas, temp, ruta);//llamado recursivo
                                 part++;//cambia la bandera para ingresar cambiar de ruta
                             } else {
@@ -74,7 +74,7 @@ public class Proyecto {
         }
     }
 
-    public int cant_cami(Actividad a) {//cuenta la cantidad de nodos antecesores que tiene holgura 0
+    public int cant_cami(Actividad a) {// método que cuenta la cantidad de nodos antecesores que tienen holgura 0
         int n = 0;
         for (Actividad temp : a.getEntradas()) {
             if (temp.getHolgura() == 0) {
@@ -90,7 +90,7 @@ public class Proyecto {
         });
     }
 
-    public void calcular_IC() {
+    public void calcular_IC() {    // método que calcula el inicio más cercano de cada actividad
         List<Actividad> cola = new ArrayList<>();
         ArrayList<Actividad> visitados = new ArrayList();
         Actividad temp;
@@ -108,7 +108,7 @@ public class Proyecto {
         }
     }
 
-    public void calcular_IL() {
+    public void calcular_IL() { // método que calcula el inicio más lejano de cada actividad
         ArrayList<Actividad> visitados = new ArrayList();
         List<Actividad> cola = new ArrayList<>();
         Actividad temp;
@@ -129,13 +129,13 @@ public class Proyecto {
     // </editor-fold>
 
     // <editor-fold desc="Encoladores" defaultstate="collapsed">
-    public void add_cola(Actividad a, List<Actividad> cola) {
+    public void add_cola(Actividad a, List<Actividad> cola) { // método que agrega en una cola los sucesores de de cada actividad que ingresa
         a.getSalidas().forEach((act) -> {
             cola.add(act);
         });
     }
 
-    public void add_colaF(Actividad a, List<Actividad> cola) {
+    public void add_colaF(Actividad a, List<Actividad> cola) { // método que agrega en una cola los predecesores de cada actividad que ingresa
         a.getEntradas().forEach((act) -> {
             cola.add(act);
         });
@@ -143,7 +143,7 @@ public class Proyecto {
     // </editor-fold>
 
     // <editor-fold desc="Buscadores" defaultstate="collapsed">
-    public int buscamayor(Actividad act) {
+    public int buscamayor(Actividad act) { // método que asigna el valor a tiempo lejano
         int mayor = 0;
         for (Actividad a : act.getEntradas()) {
             if (mayor <= a.getTC()) {
@@ -153,7 +153,7 @@ public class Proyecto {
         return mayor;
     }
 
-    public int buscamenor(Actividad act) {
+    public int buscamenor(Actividad act) { // método que asigna el valor a tiempo cercano
         int menor = Integer.MAX_VALUE;
         for (Actividad a : act.getSalidas()) {
             if (menor >= a.getIL()) {
@@ -165,7 +165,7 @@ public class Proyecto {
     // </editor-fold>
 
     // <editor-fold desc="Agregadores" defaultstate="collapsed">
-    public void add_inicio() {
+    public void add_inicio() {// método que agrega un nodo inicial al grafo 
         Set<String> keys = actividades.keySet();
         Actividad a;
         for (String key : keys) {
@@ -177,7 +177,7 @@ public class Proyecto {
         }
     }
 
-    public void add_final() {
+    public void add_final() {// método que agrega un nodo final al grafo 
         Set<String> keys = actividades.keySet();
         Actividad a;
         for (String key : keys) {
@@ -191,7 +191,7 @@ public class Proyecto {
     // </editor-fold>
 
     // <editor-fold desc="Comprobadores" defaultstate="collapsed">
-    public boolean hay_ciclo() {//busca en el grafo si hay un ciclo
+    public boolean hay_ciclo() {// método que busca en el grafo si hay un ciclo
         Set<String> keys = actividades.keySet();
         Actividad a;
         for (String key : keys) {
@@ -246,10 +246,9 @@ public class Proyecto {
     // </editor-fold>
 
     // </editor-fold>
-    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private final HashMap<String, Actividad> actividades;//lista para las entradas
-    Actividad n_i;
-    Actividad n_f;
+    Actividad n_i;// nodo inicial
+    Actividad n_f;// nodo final
     // </editor-fold>
 }

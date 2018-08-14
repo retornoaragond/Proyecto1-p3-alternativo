@@ -3,15 +3,15 @@ package mrcproject;
 import mrcproject.model.Archivos;
 import mrcproject.model.Proyecto;
 
-/**
- * @author Esteban Espinoza Fallas
- * @author Carlos Vargas Alfaro
- */
+/*
+  * @author Esteban Espinoza Fallas   402290345
+  * @author Carlos Vargas Alfaro      402170927   
+*/
 public class MRCproject {
 
     public static void main(String[] args) throws Exception {
         try {
-            Proyecto prueba = new Proyecto(new Archivos().carga("datos3s.xml"));//carga el archivo
+            Proyecto prueba = new Proyecto(new Archivos().carga("datos.xml"));//carga el archivo
             System.out.print("\n" + prueba.rutaCritica() + "\n\n");// se imprime lo cargado
             System.out.print(prueba.Prueba_inicial());// se imprime lo cargado
         } catch (Exception e) {

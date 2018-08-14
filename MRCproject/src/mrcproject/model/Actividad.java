@@ -3,8 +3,8 @@ package mrcproject.model;
 import java.util.ArrayList;
 
 /**
- * @author Esteban Espinoza Fallas
- * @author Carlos Vargas Alfaro
+ * @author Esteban Espinoza Fallas 402290345
+ * @author Carlos Vargas Alfaro 402170927
  */
 public class Actividad {
 
@@ -20,28 +20,13 @@ public class Actividad {
     // </editor-fold>
 
     // <editor-fold desc="Metodos" defaultstate="collapsed">
-    public String getName() {
-        return name;
-    }
-
+    // métodos sets 
     public void setName(String name) {
         this.name = name;
     }
 
-    public int getDtime() {
-        return dtime;
-    }
-
     public void setDtime(int dtime) {
         this.dtime = dtime;
-    }
-
-    public int getIC() {
-        return IC;
-    }
-
-    public int getTC() {
-        return this.IC + this.dtime;
     }
 
     public void setIC(int IC) {
@@ -50,6 +35,31 @@ public class Actividad {
 
     public void setIL(int IL) {
         this.IL = IL;
+    }
+
+    public void setEntradas(ArrayList<Actividad> entradas) {
+        this.entradas = entradas;
+    }
+
+    public void setSalidas(ArrayList<Actividad> salidas) {
+        this.salidas = salidas;
+    }
+
+    //métodos gets 
+    public int getDtime() {
+        return dtime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getIC() {
+        return IC;
+    }
+
+    public int getTC() {
+        return this.IC + this.dtime;
     }
 
     public int getIL() {
@@ -64,19 +74,11 @@ public class Actividad {
         return entradas;
     }
 
-    public void setEntradas(ArrayList<Actividad> entradas) {
-        this.entradas = entradas;
-    }
-
     public ArrayList<Actividad> getSalidas() {
         return salidas;
     }
 
-    public void setSalidas(ArrayList<Actividad> salidas) {
-        this.salidas = salidas;
-    }
-
-    public int getHolgura() {
+    public int getHolgura() {    // método que cálcula la holgura de cada actividad 
         return this.IL - this.IC;
     }
 
@@ -90,10 +92,9 @@ public class Actividad {
     }
 
     // </editor-fold>
-    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private String name;// nombre o sigla 
-    private int dtime;//tiempo de duracion de la actividad
+    private int dtime;//tiempo de duración de la actividad
     private int IC;//Inicio más cercano
     private int IL;//Inicio más lejano
     private ArrayList<Actividad> entradas;//predecesor          lista para los Antecesores
