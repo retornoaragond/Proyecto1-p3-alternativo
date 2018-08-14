@@ -33,7 +33,7 @@ public class Proyecto {
             calcular_IC();
             calcular_IL();
             ArrayList<ArrayList<Actividad>> rutas = new ArrayList<>();//lista de listas para las rutas
-            CPM2(rutas, n_f, 0);//metodo para N rutas criticas
+            CPM(rutas, n_f, 0);//metodo para N rutas criticas
             reverse(rutas);//metodo da vuelta a las rutas ya que estan al reves
             return ruta(rutas);
         } else {
@@ -42,7 +42,7 @@ public class Proyecto {
         return null;
     }
 
-    public void CPM2(ArrayList<ArrayList<Actividad>> rutas, Actividad a, int ruta) {//metodo para N rutas criticas empezando desde el final
+    public void CPM(ArrayList<ArrayList<Actividad>> rutas, Actividad a, int ruta) {//metodo para N rutas criticas empezando desde el final
         int part = 0;//bandera para saber si hay mas caminos que llega a un nodo
         for (Actividad temp : a.getEntradas()) {
             if (!("n_i".equals(temp.getName()))) {//si es el nodo inicial no lo toma encuenta 
@@ -51,21 +51,21 @@ public class Proyecto {
                         ArrayList<Actividad> tempL = new ArrayList<>();
                         tempL.add(temp);
                         rutas.add(tempL);
-                        CPM2(rutas, temp, rutas.size() - 1);//llamado recursivo
+                        CPM(rutas, temp, rutas.size() - 1);//llamado recursivo
                     } else {
                         if (cant_cami(a) < 2) {//si sus antecesorees con hogura 0 es menor a 1
                             rutas.get(ruta).add(temp);//lo ingresa en esa lista
-                            CPM2(rutas, temp, ruta);//llamad recursivo
+                            CPM(rutas, temp, ruta);//llamad recursivo
                         } else {
                             if (part == 0) {//si es el primer de los nodos antecesores  
                                 ArrayList<Actividad> tempL2 = (ArrayList) rutas.get(ruta).clone();//crea una copia de la ruta actual
                                 rutas.add(tempL2);//la copia la ingresa en un nuevo lugar
                                 rutas.get(ruta).add(temp);//ingresa el primero antecesor
-                                CPM2(rutas, temp, ruta);//llamado recursivo
+                                CPM(rutas, temp, ruta);//llamado recursivo
                                 part++;//cambia la bandera para ingresar cambiar de ruta
                             } else {
                                 rutas.get(++ruta).add(temp);//ingresa en la ruta copiada anteriormente
-                                CPM2(rutas, temp, rutas.size() - 1);//llamado recursivo
+                                CPM(rutas, temp, rutas.size() - 1);//llamado recursivo
                             }
                         }
                     }
