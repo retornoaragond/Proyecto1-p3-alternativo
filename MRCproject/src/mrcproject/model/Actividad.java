@@ -92,6 +92,7 @@ public class Actividad {
     }
 
     // </editor-fold>
+    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private String name;// nombre o sigla 
     private int dtime;//tiempo de duración de la actividad
