@@ -15,8 +15,8 @@ public class Proyecto {
     // <editor-fold desc="Constructores" defaultstate="collapsed">
     public Proyecto(HashMap<String, Actividad> actividades) {
         this.actividades = actividades;
-        this.n_i = new Actividad("n_i", 0);
-        this.n_f = new Actividad("n_f", 0);
+        this.n_i = new Actividad("n_i", 0,0,0);
+        this.n_f = new Actividad("n_f", 0,0,0);
     }
     // </editor-fold>
 
@@ -226,7 +226,7 @@ public class Proyecto {
 
     public String Prueba_inicial() {
         StringBuilder str;
-        str = new StringBuilder().append("id\ttiempo\tIC\tTC\tIL\tTL\tholgura\n");
+        str = new StringBuilder().append("id\ttiempo\tIC\tTC\tIL\tTL\tholgura\tX\tY\n");
         actividades.forEach((k, v)
                 -> str.append(v.toString()).append("\n"));
         return str.toString();
@@ -246,6 +246,7 @@ public class Proyecto {
     // </editor-fold>
 
     // </editor-fold>
+    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private final HashMap<String, Actividad> actividades;//lista para las entradas
     Actividad n_i;// nodo inicial

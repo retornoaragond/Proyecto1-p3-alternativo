@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<datos>
+    <Actividad duracion="2" id="A" x="283" y="426"/>
+    <Actividad duracion="1" id="B" x="358" y="329"/>
+    <Actividad duracion="4" id="C" x="402" y="422"/>
+    <Actividad duracion="3" id="D" x="358" y="521"/>
+    <Actividad duracion="9" id="E" x="177" y="426"/>
+    <Actividad duracion="1" id="F" x="496" y="327"/>
+    <Actividad duracion="5" id="G" x="521" y="424"/>
+    <Actividad duracion="2" id="H" x="495" y="516"/>
+    <Actividad duracion="2" id="I" x="637" y="372"/>
+    <Actividad duracion="1" id="J" x="637" y="487"/>
+    <Actividad duracion="1" id="K" x="752" y="430"/>
+    <Actividad duracion="2" id="L" x="68" y="430"/>
+    <Relacion actividad="A" sucesor="E"/>
+    <Relacion actividad="A" sucesor="B"/>
+    <Relacion actividad="A" sucesor="C"/>
+    <Relacion actividad="A" sucesor="D"/>
+    <Relacion actividad="B" sucesor="F"/>
+    <Relacion actividad="C" sucesor="F"/>
+    <Relacion actividad="C" sucesor="G"/>
+    <Relacion actividad="C" sucesor="H"/>
+    <Relacion actividad="D" sucesor="H"/>
+    <Relacion actividad="F" sucesor="I"/>
+    <Relacion actividad="H" sucesor="J"/>
+    <Relacion actividad="I" sucesor="K"/>
+    <Relacion actividad="I" sucesor="J"/>
+    <Relacion actividad="J" sucesor="K"/>
+    <Relacion actividad="L" sucesor="E"/>
+</datos>

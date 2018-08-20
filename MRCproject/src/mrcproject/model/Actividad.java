@@ -9,13 +9,15 @@ import java.util.ArrayList;
 public class Actividad {
 
     // <editor-fold desc="Constructores" defaultstate="collapsed">
-    public Actividad(String name, int dtime) {
+    public Actividad(String name, int dtime, int X, int Y) {
         this.name = name;
         this.dtime = dtime;
         this.IC = 0;
         this.IL = 0;
         this.entradas = new ArrayList<>();
         this.salidas = new ArrayList<>();
+        this.X = X;
+        this.Y = Y;
     }
     // </editor-fold>
 
@@ -82,12 +84,29 @@ public class Actividad {
         return this.IL - this.IC;
     }
 
+    public int getX() {
+        return X;
+    }
+
+    public void setX(int X) {
+        this.X = X;
+    }
+
+    public int getY() {
+        return Y;
+    }
+
+    public void setY(int Y) {
+        this.Y = Y;
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append(this.name).append("\t").append(this.dtime).append("\t").append(this.IC)
                 .append("\t").append(this.getTC()).append("\t").append(this.IL).append("\t")
-                .append(this.getTL()).append("\t").append(this.getHolgura());
+                .append(this.getTL()).append("\t").append(this.getHolgura()).append("\t")
+                .append(this.X).append("\t").append(this.Y);
         return str.toString();
     }
 
@@ -100,5 +119,7 @@ public class Actividad {
     private int IL;//Inicio más lejano
     private ArrayList<Actividad> entradas;//predecesor          lista para los Antecesores
     private ArrayList<Actividad> salidas;// sucesor             lista para los Sucesores
+    private int X;//posicion X
+    private int Y;//posicion Y
     // </editor-fold>
 }
