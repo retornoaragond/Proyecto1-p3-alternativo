@@ -27,6 +27,7 @@ public class Proyecto {
     // </editor-fold>
 
     // <editor-fold desc="Metodos" defaultstate="collapsed">
+    
     public HashMap<String, Actividad> getActividades() {
         return actividades;
     }
@@ -225,16 +226,9 @@ public class Proyecto {
     // </editor-fold>
 
     // <editor-fold desc="ToStrings" defaultstate="collapsed">
+
     @Override
     public String toString() {
-        StringBuilder str;
-        str = new StringBuilder().append("Actividad     Duracion      Siguiente        Anterior \n");
-        actividades.forEach((k, v)
-                -> str.append(v.toString()));
-        return str.toString();
-    }
-
-    public String Prueba_inicial() {
         StringBuilder str;
         str = new StringBuilder().append("id\ttiempo\tIC\tTC\tIL\tTL\tholgura\tX\tY\n");
         actividades.forEach((k, v)
@@ -256,6 +250,7 @@ public class Proyecto {
     // </editor-fold>
 
     // </editor-fold>
+    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private final HashMap<String, Actividad> actividades;//lista para las entradas
     Actividad n_i;// nodo inicial

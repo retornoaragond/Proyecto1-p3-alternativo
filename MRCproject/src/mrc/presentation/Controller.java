@@ -1,5 +1,6 @@
 package mrc.presentation;
 
+import mrc.data.Archivos;
 import mrc.logic.Actividad;
 
 /**
@@ -20,5 +21,17 @@ public class Controller {
     public void agregarActividad(String id,int duracion,int x,int y) throws Exception{
         Actividad a = new Actividad(id, duracion, x, y);
         model.agregarActividad(a);
+    }
+    
+    public void abrirarchivo(String ruta){
+        model.abrirArchivo(ruta);
+    }
+    
+    public void guardarArchivo(String ruta){
+       model.guardarArchivo(ruta);
+    }
+    
+    public void limpiarProyecto(){
+        model.limpiarProyecto();
     }
 }

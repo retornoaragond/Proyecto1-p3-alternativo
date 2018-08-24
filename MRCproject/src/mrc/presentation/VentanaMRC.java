@@ -8,10 +8,10 @@ import java.awt.geom.Ellipse2D;
 import static java.lang.Math.abs;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import mrc.logic.Actividad;
 
 /**
@@ -25,17 +25,53 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
     int R = 20;
     int D = 40;
     int cont = 1;
+    private final FileNameExtensionFilter filter
+            = new FileNameExtensionFilter(
+                    "Archivos .xml", "xml"
+            );
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar1 = new javax.swing.JMenuBar();
+        Archivo = new javax.swing.JMenu();
+        Guardar = new javax.swing.JMenuItem();
+        Recuperar = new javax.swing.JMenuItem();
+        Limpiar = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                formMouseClicked(evt);
+
+        Archivo.setText("Archivo");
+
+        Guardar.setText("Guardar");
+        Guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GuardarActionPerformed(evt);
             }
         });
+        Archivo.add(Guardar);
+
+        Recuperar.setText("Recuperar");
+        Recuperar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RecuperarActionPerformed(evt);
+            }
+        });
+        Archivo.add(Recuperar);
+
+        Limpiar.setText("Limpiar");
+        Limpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LimpiarActionPerformed(evt);
+            }
+        });
+        Archivo.add(Limpiar);
+
+        jMenuBar1.add(Archivo);
+        Archivo.getAccessibleContext().setAccessibleParent(Guardar);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -45,21 +81,23 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 513, Short.MAX_VALUE)
+            .addGap(0, 511, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-//        try {
-//            if (evt.getClickCount() == 2) {
-//                model.agregarActividad(new Actividad("" + cont++, 2, evt.getX(), evt.getY()));
-//            }
-//        } catch (Exception ex) {
-//            Logger.getLogger(VentanaMRC.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }//GEN-LAST:event_formMouseClicked
+    private void LimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LimpiarActionPerformed
+        controller.limpiarProyecto();
+    }//GEN-LAST:event_LimpiarActionPerformed
+
+    private void RecuperarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecuperarActionPerformed
+        abrir_proyecto();
+    }//GEN-LAST:event_RecuperarActionPerformed
+
+    private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
+        guardar_proyecto();
+    }//GEN-LAST:event_GuardarActionPerformed
 
     public VentanaMRC() {
         initComponents();
@@ -111,6 +149,33 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
             } catch (Exception ex) {
                 
             }
+        }
+    }
+    public void abrir_proyecto(){
+        JFileChooser file = new JFileChooser();
+        file.setFileFilter(filter);
+        int opcion = file.showOpenDialog(this);
+        String ruta_Archivo_open = null;
+        if (opcion == JFileChooser.APPROVE_OPTION) {
+            ruta_Archivo_open = file.getSelectedFile().toString();
+        }
+        if (ruta_Archivo_open != null) {
+            System.out.println("ruta abrir: " + ruta_Archivo_open);
+            controller.abrirarchivo(ruta_Archivo_open);
+        }
+    }
+    
+    public void guardar_proyecto(){
+        String ruta_Archivo_save = null;
+         JFileChooser file_open = new JFileChooser();
+        file_open.setFileFilter(filter);
+        int opcion = file_open.showSaveDialog(this);
+        if (opcion == JFileChooser.APPROVE_OPTION) {
+            ruta_Archivo_save = file_open.getSelectedFile().toString();
+        }
+        if (ruta_Archivo_save != null) {
+            System.out.println("ruta guardar: " + ruta_Archivo_save);
+            controller.guardarArchivo(ruta_Archivo_save);
         }
     }
 
@@ -218,5 +283,10 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu Archivo;
+    private javax.swing.JMenuItem Guardar;
+    private javax.swing.JMenuItem Limpiar;
+    private javax.swing.JMenuItem Recuperar;
+    private javax.swing.JMenuBar jMenuBar1;
     // End of variables declaration//GEN-END:variables
 }
