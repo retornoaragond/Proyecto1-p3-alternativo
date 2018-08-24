@@ -1,21 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mrc.presentation;
 
 import java.util.Observable;
+import java.util.Observer;
 import mrc.logic.Actividad;
 import mrc.logic.Proyecto;
 
 /**
- *
- * @author Estudiante
+ * @author Esteban Espinoza Fallas 402290345
+ * @author Carlos Vargas Alfaro 402170927
  */
+
 public class Model extends Observable {
 
     Proyecto proyecto;
+public Model() {
+        proyecto = new Proyecto();
+    }
+
 
     public void setP(Proyecto p) {
         this.proyecto = p;
@@ -23,16 +24,20 @@ public class Model extends Observable {
         notifyObservers(null);
     }
 
-    public Proyecto getP() {
+    public Proyecto getPoryect() {
         return proyecto;
     }
 
-    public Model() {
-        proyecto = new Proyecto();
+    @Override
+    public void addObserver(Observer o){
+        super.addObserver(o);
+        setChanged();
+        notifyObservers(null);
     }
 
     public void agregarActividad(Actividad a) throws Exception {
         proyecto.agregarActividad(a);
+        //actualizar las rutas
         setChanged();
         notifyObservers(null);
     }
