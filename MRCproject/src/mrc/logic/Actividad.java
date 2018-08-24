@@ -1,4 +1,4 @@
-package mrcproject.model;
+package mrc.logic;
 
 import java.util.ArrayList;
 

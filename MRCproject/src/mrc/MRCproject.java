@@ -1,13 +1,15 @@
-package mrcproject;
+package mrc;
 
-import mrcproject.model.Archivos;
-import mrcproject.model.Proyecto;
-import mrcproject.vista.VentanaMRC;
+import mrc.data.Archivos;
+import mrc.logic.Actividad;
+import mrc.logic.Proyecto;
+import mrc.presentation.Model;
+import mrc.presentation.VentanaMRC;
 
 /*
   * @author Esteban Espinoza Fallas   402290345
   * @author Carlos Vargas Alfaro      402170927   
-*/
+ */
 public class MRCproject {
 
     public static void main(String[] args) throws Exception {
@@ -16,8 +18,10 @@ public class MRCproject {
             System.out.print("\n" + prueba.rutaCritica() + "\n\n");// se imprime lo cargado
             System.out.print(prueba.Prueba_inicial());// se imprime lo cargado
             new Archivos().generar("datosG3.xml", prueba.getActividades());
-            VentanaMRC view= new VentanaMRC();
-            view.setModel(prueba);
+            VentanaMRC view = new VentanaMRC();
+            Model m = new Model();
+            m.setP(prueba);
+            view.setModel(m);
             view.setVisible(true);
         } catch (Exception e) {
             System.err.println("El programa no puede Ejecutarse!!");

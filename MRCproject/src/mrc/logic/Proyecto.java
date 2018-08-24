@@ -1,4 +1,4 @@
-package mrcproject.model;
+package mrc.logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +15,14 @@ public class Proyecto {
     // <editor-fold desc="Constructores" defaultstate="collapsed">
     public Proyecto(HashMap<String, Actividad> actividades) {
         this.actividades = actividades;
-        this.n_i = new Actividad("n_i", 0,0,0);
-        this.n_f = new Actividad("n_f", 0,0,0);
+        this.n_i = new Actividad("n_i", 0, 0, 0);
+        this.n_f = new Actividad("n_f", 0, 0, 0);
+    }
+
+    public Proyecto() {
+        this.actividades = new HashMap<>();
+        this.n_i = new Actividad("n_i", 0, 0, 0);
+        this.n_f = new Actividad("n_f", 0, 0, 0);
     }
     // </editor-fold>
 
@@ -188,6 +194,10 @@ public class Proyecto {
             }
         }
     }
+
+    public void agregarActividad(Actividad a) {
+        actividades.put(a.getName(), a);
+    }
     // </editor-fold>
 
     // <editor-fold desc="Comprobadores" defaultstate="collapsed">
@@ -246,7 +256,6 @@ public class Proyecto {
     // </editor-fold>
 
     // </editor-fold>
-    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private final HashMap<String, Actividad> actividades;//lista para las entradas
     Actividad n_i;// nodo inicial

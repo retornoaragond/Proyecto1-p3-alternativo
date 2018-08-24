@@ -3,19 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mrcproject.vista;
+package mrc.presentation;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import static java.lang.Math.abs;
-import mrcproject.model.Actividad;
-import mrcproject.model.Proyecto;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mrc.logic.Actividad;
 
 /**
  *
  * @author Estudiante
  */
-public class VentanaMRC extends javax.swing.JFrame {
+public class VentanaMRC extends javax.swing.JFrame implements Observer {
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,27 +30,43 @@ public class VentanaMRC extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 1069, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 513, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public Proyecto model;
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        try {
+            // TODO add your handling code here:
+            model.agregarActividad(new Actividad("" + cont++, 2, evt.getX(), evt.getY()));
+        } catch (Exception ex) {
+            Logger.getLogger(VentanaMRC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formMouseClicked
+
+    public Model model;
     int R = 20;
     int D = 40;
+    int cont = 1;
 
-    public void setModel(Proyecto p) {
-        this.model = p;
+    public void setModel(Model model) {
+        this.model = model;
+        model.addObserver(this);
     }
 
     /**
@@ -60,7 +79,7 @@ public class VentanaMRC extends javax.swing.JFrame {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        for (Actividad a : model.getActividades().values()) {
+        for (Actividad a : model.proyecto.getActividades().values()) {
             if (a.getHolgura() == 0) {
                 g.setColor(Color.red);
             } else {
@@ -70,7 +89,7 @@ public class VentanaMRC extends javax.swing.JFrame {
             g.drawString(a.getName() + "(" + a.getDtime() + ")",
                     a.getX() - R + 5, a.getY() + 5);
         }
-        for (Actividad a : model.getActividades().values()) {
+        for (Actividad a : model.proyecto.getActividades().values()) {
             for (Actividad act : a.getSalidas()) {
                 if (!("n_f".equals(act.getName()))) {
                     if (a.getHolgura() == 0 && act.getHolgura() == 0) {
@@ -90,7 +109,7 @@ public class VentanaMRC extends javax.swing.JFrame {
         int BH = (int) Math.sqrt(Math.pow(abs(BX), 2) + Math.pow(abs(BY), 2));
         int abx = R * abs(BX) / BH;
         int aby = R * abs(BY) / BH;
-        int c=3;
+        int c = 3;
         if (BY < 0) {
             if (BX < 0) {
                 g.drawLine(a.getX() + abx, a.getY() + aby, b.getX() - abx, b.getY() - aby);
@@ -139,10 +158,17 @@ public class VentanaMRC extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new VentanaMRC().setVisible(true);
             }
         });
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        this.repaint();
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
