@@ -34,4 +34,8 @@ public class Controller {
     public void limpiarProyecto(){
         model.limpiarProyecto();
     }
+    
+    public void Relacionar(String a, String b) throws Exception{
+        model.relacionar(a, b);
+    }
 }

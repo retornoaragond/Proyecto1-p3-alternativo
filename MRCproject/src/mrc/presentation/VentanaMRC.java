@@ -1,7 +1,9 @@
 package mrc.presentation;
 
+import com.sun.webkit.graphics.GraphicsDecoder;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
@@ -25,6 +27,8 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
     int R = 20;
     int D = 40;
     int cont = 1;
+    Actividad seleccionada = null;
+    Actividad movida = null;
     private final FileNameExtensionFilter filter
             = new FileNameExtensionFilter(
                     "Archivos .xml", "xml"
@@ -69,7 +73,6 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
         Archivo.add(Limpiar);
 
         jMenuBar1.add(Archivo);
-        Archivo.getAccessibleContext().setAccessibleParent(Guardar);
 
         setJMenuBar(jMenuBar1);
 
@@ -102,56 +105,123 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
     public VentanaMRC() {
         initComponents();
         initListeners();
+        setTitle("MRC");
     }
 
     public void setModel(Model model) {
         this.model = model;
         model.addObserver(this);
     }
-    
-    public void setController(Controller controller){
-        this.controller=controller;
+
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 
     public void initListeners() {
         this.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent ev) {
-                if (ev.getClickCount() == 2) {
-                    preAgregarActividad(ev.getX(), ev.getY());
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    preAgregarActividad(evt.getX(), evt.getY());
                 } else {
-                    Actividad seleccionada = seleccionar(ev.getX(), ev.getY());
-                    if (seleccionada != null) {
-                        setTitle(seleccionada.getName());
+                    if (seleccionada == null) {
+                        seleccionada = seleccionar(evt.getX(), evt.getY());
+                        if (seleccionada != null) {
+                            System.out.println("Actividad " + seleccionada.getName());
+                            setTitle("salida " + seleccionada.getName());
+                        } else {
+                            setTitle("MRC");
+                        }
+                    } else {
+                        Actividad temp = seleccionar(evt.getX(), evt.getY());
+                        if (temp != null) {
+                            try {
+                                System.out.println("Actividad " + temp.getName());
+                                controller.Relacionar(seleccionada.getName(), temp.getName());
+                                setTitle("entrada " + temp.getName());
+                                seleccionada = null;
+                                repaint();
+                            } catch (Exception ex) {
+                                //generar ventanita del error
+                                JOptionPane.showMessageDialog(null, ex.getMessage());
+                                System.out.println(ex.getMessage());
+                                seleccionada = null;
+                                repaint();
+                            }
+                        } else {
+                            seleccionada = null;
+                            setTitle("MRC");
+                            repaint();
+                        }
                     }
                 }
+            }
+        });
+        this.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent evt) {
+                if (seleccionada != null) {
+                    repaint();
+                }
+
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent evt) {
+                movida = seleccionar(evt.getX(), evt.getY());
+                if (movida != null) {
+                    setTitle("Moviendo: " + movida.getName());
+                    movida.setX(evt.getX());
+                    movida.setY(evt.getY());
+                }
+                repaint();
             }
         });
     }
 
     public Actividad seleccionar(int x, int y) {
-        for (Actividad a : model.getPoryect().getActividades().values()) {
-            if (new Ellipse2D.Double(a.getX() - R, a.getY() - R, D, D).contains(x, y)) {
-                return a;
+        if (!model.getPoryect().getActividades().isEmpty()) {
+            for (Actividad a : model.getPoryect().getActividades().values()) {
+                if (new Ellipse2D.Double(a.getX() - R, a.getY() - R, D, D).contains(x, y)) {
+                    return a;
+                }
             }
         }
         return null;
     }
 
-    public void preAgregarActividad(int x, int y){
+    public void preAgregarActividad(int x, int y) {
         JTextField id = new JTextField();
         JTextField duracion = new JTextField();
-        Object[] message = {"Id:",id,"Duracion:",duracion};
-        int option = JOptionPane.showConfirmDialog(null, message,"Actividad",JOptionPane.OK_CANCEL_OPTION);
-        if(option == JOptionPane.OK_OPTION){
-            try{
-                controller.agregarActividad(id.getText(),Integer.parseInt(duracion.getText()),x,y);
-            } catch (Exception ex) {
-                
+        Object[] message = {"Id:", id, "Duracion:", duracion};
+        boolean er = false;
+        do {
+            int option = JOptionPane.showConfirmDialog(null, message, "Actividad", JOptionPane.OK_CANCEL_OPTION);
+
+            if (option == JOptionPane.OK_OPTION) {
+                try {
+                    Integer.parseInt(duracion.getText());
+                } catch (NumberFormatException e) {
+                    er = true;
+                    JOptionPane.showMessageDialog(null,
+                            "La duracion debe ser un numero.");
+                    System.out.println("error la duracion debe ser un numero");
+                }
+                try {
+                    controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
+                    er = false;
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "No se puede creas la activadad.");
+                    System.out.println("No se puede creas la activadad");
+                }
+            } else {
+                er = false;
             }
-        }
+        } while (er);
     }
-    public void abrir_proyecto(){
+
+    public void abrir_proyecto() {
         JFileChooser file = new JFileChooser();
         file.setFileFilter(filter);
         int opcion = file.showOpenDialog(this);
@@ -161,13 +231,14 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
         }
         if (ruta_Archivo_open != null) {
             System.out.println("ruta abrir: " + ruta_Archivo_open);
+            controller.limpiarProyecto();
             controller.abrirarchivo(ruta_Archivo_open);
         }
     }
-    
-    public void guardar_proyecto(){
+
+    public void guardar_proyecto() {
         String ruta_Archivo_save = null;
-         JFileChooser file_open = new JFileChooser();
+        JFileChooser file_open = new JFileChooser();
         file_open.setFileFilter(filter);
         int opcion = file_open.showSaveDialog(this);
         if (opcion == JFileChooser.APPROVE_OPTION) {
@@ -204,6 +275,7 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
                 }
             }
         }
+        prerelacion(g);
     }
 
     public void relaciones(Actividad a, Actividad b, Graphics g) {
@@ -229,6 +301,13 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
                 g.drawLine(a.getX() - abx, a.getY() - aby, b.getX() + abx, b.getY() + aby);
                 g.fillOval(b.getX() + abx - c, b.getY() + aby - c, 6, 6);
             }
+        }
+    }
+
+    public void prerelacion(Graphics g) {
+        if (seleccionada != null) {
+            g.setColor(Color.green);
+            g.drawLine(seleccionada.getX(), seleccionada.getY(), this.getMousePosition().x, this.getMousePosition().y);
         }
     }
 

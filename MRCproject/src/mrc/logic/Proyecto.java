@@ -27,7 +27,6 @@ public class Proyecto {
     // </editor-fold>
 
     // <editor-fold desc="Metodos" defaultstate="collapsed">
-    
     public HashMap<String, Actividad> getActividades() {
         return actividades;
     }
@@ -105,7 +104,7 @@ public class Proyecto {
         visitados.add(n_i);
         while (!cola.isEmpty()) {
             temp = cola.remove(0);
-            if (!realizable1(temp, visitados)) {  //si sus antecesores no han sido visitados no se procesa 
+            if (!consultaEntradas(temp, visitados)) {  //si sus antecesores no han sido visitados no se procesa 
                 temp.setIC(buscamayor(temp));
                 add_cola(temp, cola);
                 visitados.add(temp);
@@ -124,7 +123,7 @@ public class Proyecto {
         visitados.add(n_f);
         while (!cola.isEmpty()) {
             temp = cola.remove(0);
-            if (!realizable2(temp, visitados)) {  //si sus antecesores no han sido visitados no se procesa 
+            if (!consultaSalidas(temp, visitados)) {  //si sus antecesores no han sido visitados no se procesa 
                 visitados.add(temp);
                 temp.setIL(buscamenor(temp) - temp.getDtime());
                 add_colaF(temp, cola);
@@ -196,11 +195,35 @@ public class Proyecto {
         }
     }
 
-    public void agregarActividad(Actividad a) {
-        actividades.put(a.getName(), a);
+    public void agregarActividad(Actividad a) throws Exception {
+        if (!actividades.isEmpty()) {
+            Set<String> keys = actividades.keySet();
+            Actividad temp;
+            for (String key : keys) {
+                temp = actividades.get(key);
+                if (!a.getName().equals(temp.getName())) {
+                    actividades.put(a.getName(), a);
+                } else {
+                    throw new Exception("Error al tratar de agregar una actividad: ya existe una actividad con el mismo ID");
+                }
+            }
+        } else {
+            actividades.put(a.getName(), a);
+        }
     }
-    // </editor-fold>
 
+    public void relacionar(String a, String b) throws Exception {
+        if ((!b.equals(a))) {
+            Actividad ac = this.getActividades().get(a);
+            Actividad bc = this.getActividades().get(b);
+            ac.getSalidas().add(bc);
+            bc.getEntradas().add(ac);
+        } else {
+            throw new Exception("Error al tratar de relacionar: Puede generar un ciclo.");
+        }
+    }
+
+    // </editor-fold>
     // <editor-fold desc="Comprobadores" defaultstate="collapsed">
     public boolean hay_ciclo() {// método que busca en el grafo si hay un ciclo
         Set<String> keys = actividades.keySet();
@@ -216,17 +239,16 @@ public class Proyecto {
         return false;
     }
 
-    public boolean realizable1(Actividad a, ArrayList<Actividad> visit) {//busca en los visitados si sus predecesotres ya fueron visitados
+    public boolean consultaEntradas(Actividad a, ArrayList<Actividad> visit) {//busca en los visitados si sus predecesotres ya fueron visitados
         return a.getEntradas().stream().anyMatch((act) -> (!visit.contains(act)));
     }
 
-    public boolean realizable2(Actividad a, ArrayList<Actividad> visit) {//busca en los visitados si sus sucesores ya fueron visitados
+    public boolean consultaSalidas(Actividad a, ArrayList<Actividad> visit) {//busca en los visitados si sus sucesores ya fueron visitados
         return a.getSalidas().stream().anyMatch((act) -> (!visit.contains(act)));
     }
+
     // </editor-fold>
-
     // <editor-fold desc="ToStrings" defaultstate="collapsed">
-
     @Override
     public String toString() {
         StringBuilder str;
@@ -250,7 +272,6 @@ public class Proyecto {
     // </editor-fold>
 
     // </editor-fold>
-    
     // <editor-fold desc="Atributos" defaultstate="collapsed">
     private final HashMap<String, Actividad> actividades;//lista para las entradas
     Actividad n_i;// nodo inicial

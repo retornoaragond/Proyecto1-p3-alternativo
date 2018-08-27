@@ -59,4 +59,11 @@ public class Model extends Observable {
         setChanged();
         notifyObservers(null);
     }
+    
+    public void relacionar(String a, String b) throws Exception{
+        
+        this.proyecto.relacionar(a, b);
+        setChanged();
+        notifyObservers(null);
+    }
 }
