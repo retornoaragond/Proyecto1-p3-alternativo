@@ -231,7 +231,7 @@ public class Proyecto {
     }
 
     public void relacionar(String a, String b) throws Exception {
-        if ((!b.equals(a)) && !hay_ciclo()) {
+        if ((!b.equals(a)) && !generaciclo(actividades.get(a), actividades.get(b))) {
             Actividad ac = this.getActividades().get(a);
             Actividad bc = this.getActividades().get(b);
             ac.getSalidas().add(bc);
@@ -250,12 +250,16 @@ public class Proyecto {
         for (String key : keys) {
             a = actividades.get(key);
             for (Actividad act : a.getSalidas()) {
-                if (act.getSalidas().contains(a) && !act.equals(n_f)) {
+                if (act.getSalidas().contains(a)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    public boolean generaciclo(Actividad temp, Actividad temp2) {
+        return temp.getEntradas().contains(temp2);
     }
 
     public boolean consultaEntradas(Actividad a, ArrayList<Actividad> visit) {//busca en los visitados si sus predecesotres ya fueron visitados
