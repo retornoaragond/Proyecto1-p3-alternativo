@@ -43,7 +43,7 @@ public class Model extends Observable {
         notifyObservers(null);
     }
 
-    public void abrirArchivo(String ruta) {
+    public void abrirArchivo(String ruta) throws Exception {
         Proyecto p = new Proyecto(new Archivos().carga(ruta));
         this.setP(p);
         System.out.print("\n" + p.rutaCritica() + "\n\n");// se imprime lo cargado

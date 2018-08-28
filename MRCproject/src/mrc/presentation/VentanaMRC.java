@@ -2,6 +2,7 @@ package mrc.presentation;
 
 import com.sun.webkit.graphics.GraphicsDecoder;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -10,6 +11,8 @@ import java.awt.geom.Ellipse2D;
 import static java.lang.Math.abs;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -197,7 +200,6 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
         boolean er = false;
         do {
             int option = JOptionPane.showConfirmDialog(null, message, "Actividad", JOptionPane.OK_CANCEL_OPTION);
-
             if (option == JOptionPane.OK_OPTION) {
                 try {
                     Integer.parseInt(duracion.getText());
@@ -212,8 +214,8 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
                     er = false;
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null,
-                            "No se puede creas la activadad.");
-                    System.out.println("No se puede creas la activadad");
+                            "No se puede crear la activadad.");
+                    System.out.println("No se puede crear la activadad");
                 }
             } else {
                 er = false;
@@ -230,9 +232,14 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
             ruta_Archivo_open = file.getSelectedFile().toString();
         }
         if (ruta_Archivo_open != null) {
-            System.out.println("ruta abrir: " + ruta_Archivo_open);
-            controller.limpiarProyecto();
-            controller.abrirarchivo(ruta_Archivo_open);
+            try {
+                System.out.println("ruta abrir: " + ruta_Archivo_open);
+                controller.limpiarProyecto();
+                controller.abrirarchivo(ruta_Archivo_open);
+            } catch (Exception ex) {
+              JOptionPane.showMessageDialog(null,
+                            "No se puede crear la activadad.");  
+            }
         }
     }
 

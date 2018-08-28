@@ -23,7 +23,7 @@ public class Controller {
         model.agregarActividad(a);
     }
     
-    public void abrirarchivo(String ruta){
+    public void abrirarchivo(String ruta) throws Exception{
         model.abrirArchivo(ruta);
     }
     

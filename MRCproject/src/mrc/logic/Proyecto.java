@@ -132,6 +132,19 @@ public class Proyecto {
             }
         }
     }
+
+    public void limpia_ini_fin() {
+        ArrayList<Actividad> inicios = n_i.getSalidas();
+        ArrayList<Actividad> finales = n_f.getEntradas();
+        n_i.setSalidas(new ArrayList<>());
+        n_f.setEntradas(new ArrayList<>());
+        inicios.forEach((a) -> {
+            a.getEntradas().remove(n_i);
+        });
+        finales.forEach((a) -> {
+            a.getSalidas().remove(n_f);
+        });
+    }
     // </editor-fold>
 
     // <editor-fold desc="Encoladores" defaultstate="collapsed">
@@ -195,29 +208,35 @@ public class Proyecto {
         }
     }
 
+    public void recalcula() {
+        limpia_ini_fin();
+        add_inicio();
+        add_final();
+        rutaCritica();
+    }
+
     public void agregarActividad(Actividad a) throws Exception {
         if (!actividades.isEmpty()) {
-            Set<String> keys = actividades.keySet();
-            Actividad temp;
-            for (String key : keys) {
-                temp = actividades.get(key);
-                if (!a.getName().equals(temp.getName())) {
-                    actividades.put(a.getName(), a);
-                } else {
-                    throw new Exception("Error al tratar de agregar una actividad: ya existe una actividad con el mismo ID");
-                }
+            if (!existe(a.getName())) {
+                actividades.put(a.getName(), a);
+                this.recalcula();
+
+            } else {
+                throw new Exception("Error al tratar de agregar una actividad: ya existe una actividad con el mismo ID");
             }
         } else {
             actividades.put(a.getName(), a);
+            this.recalcula();
         }
     }
 
     public void relacionar(String a, String b) throws Exception {
-        if ((!b.equals(a))) {
+        if ((!b.equals(a)) && !hay_ciclo()) {
             Actividad ac = this.getActividades().get(a);
             Actividad bc = this.getActividades().get(b);
             ac.getSalidas().add(bc);
             bc.getEntradas().add(ac);
+            this.recalcula();
         } else {
             throw new Exception("Error al tratar de relacionar: Puede generar un ciclo.");
         }
@@ -231,7 +250,7 @@ public class Proyecto {
         for (String key : keys) {
             a = actividades.get(key);
             for (Actividad act : a.getSalidas()) {
-                if (act.getSalidas().contains(a)) {
+                if (act.getSalidas().contains(a) && !act.equals(n_f)) {
                     return true;
                 }
             }
@@ -245,6 +264,18 @@ public class Proyecto {
 
     public boolean consultaSalidas(Actividad a, ArrayList<Actividad> visit) {//busca en los visitados si sus sucesores ya fueron visitados
         return a.getSalidas().stream().anyMatch((act) -> (!visit.contains(act)));
+    }
+
+    public boolean existe(String a) {
+        Set<String> keys = actividades.keySet();
+        Actividad temp;
+        for (String key : keys) {
+            temp = actividades.get(key);
+            if (a.equals(temp.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // </editor-fold>
