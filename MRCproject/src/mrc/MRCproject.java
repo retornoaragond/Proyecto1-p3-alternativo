@@ -1,8 +1,7 @@
 package mrc;
 
-import mrc.data.Archivos;
-import mrc.logic.Proyecto;
 import mrc.presentation.Controller;
+import mrc.presentation.Lienzo;
 import mrc.presentation.Model;
 import mrc.presentation.VentanaMRC;
 
@@ -18,6 +17,7 @@ public class MRCproject {
             Model model = new Model();
             view.setModel(model);
             Controller controller = new Controller(model, view);
+            view.setLienzo(new Lienzo(controller, model));
             view.setVisible(true);
         } catch (Exception e) {
             System.err.println("El programa no puede Ejecutarse!!");

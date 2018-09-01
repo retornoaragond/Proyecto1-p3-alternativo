@@ -33,9 +33,7 @@ public class Proyecto {
 
     // <editor-fold desc="Ruta Critica" defaultstate="collapsed">
     public String rutaCritica() { //método que retorna la o las rutas críticas del proyecto
-        add_inicio();
-        add_final();
-        if (!hay_ciclo()) {
+        if (!hasCycle()) {
             calcular_IC();
             calcular_IL();
             ArrayList<ArrayList<Actividad>> rutas = new ArrayList<>();//lista de listas para las rutas
@@ -235,36 +233,61 @@ public class Proyecto {
     }
 
     public void relacionar(String a, String b) throws Exception {
-        if ((!b.equals(a)) && !generaciclo(actividades.get(a), actividades.get(b))) {
-            Actividad ac = this.getActividades().get(a);
-            Actividad bc = this.getActividades().get(b);
-            ac.getSalidas().add(bc);
-            bc.getEntradas().add(ac);
-            this.recalcula();
+        if (!b.equals(a)) {
+            if (!actividades.get(a).getSalidas().contains(actividades.get(b))) {
+                Actividad ac = this.getActividades().get(a);
+                Actividad bc = this.getActividades().get(b);
+                ac.getSalidas().add(bc);
+                bc.getEntradas().add(ac);
+                if (!hasCycle()) {
+                    this.recalcula();
+                } else {
+                    //eliminar la relacion
+                    ac.getSalidas().remove(bc);
+                    bc.getEntradas().remove(ac);
+                    throw new Exception("3");
+                }
+            } else {
+                throw new Exception("2");
+            }
         } else {
-            throw new Exception("Error al tratar de relacionar: Puede generar un ciclo.");
+            throw new Exception("1");
         }
     }
 
     // </editor-fold>
     // <editor-fold desc="Comprobadores" defaultstate="collapsed">
-    public boolean hay_ciclo() {// método que busca en el grafo si hay un ciclo
-        Set<String> keys = actividades.keySet();
-        Actividad a;
-        for (String key : keys) {
-            a = actividades.get(key);
-            for (Actividad act : a.getSalidas()) {
-                if (act.getSalidas().contains(a)) {
-                    return true;
-                }
+    public boolean hasCycle() {
+        ArrayList<Actividad> visitados = new ArrayList<>();
+        limpia_ini_fin();
+        for (Actividad a : actividades.values()) {
+            if (hasCycle(a, visitados)) {
+                add_inicio();
+                add_final();
+                return true;
             }
         }
+        add_inicio();
+        add_final();
         return false;
     }
 
-    public boolean generaciclo(Actividad temp, Actividad temp2) {
-        return temp.getEntradas().contains(temp2);
+    public boolean hasCycle(Actividad a, ArrayList<Actividad> visitados) {
+        if (visitados.contains(a)) {
+            return true;
+        }
+        visitados.add(a);
+        if (actividades.get(a.getName()).getSalidas().stream().anyMatch((nextNode)
+                -> (hasCycle(nextNode, visitados)))) {
+            return true;
+        }
+        visitados.remove(visitados.size() - 1);
+        return false;
     }
+
+//    public boolean generaciclo(Actividad temp, Actividad temp2) {
+//        return temp.getEntradas().contains(temp2);
+//    }
 
     public boolean consultaEntradas(Actividad a, ArrayList<Actividad> visit) {//busca en los visitados si sus predecesotres ya fueron visitados
         return a.getEntradas().stream().anyMatch((act) -> (!visit.contains(act)));
