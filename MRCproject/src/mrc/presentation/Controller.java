@@ -35,7 +35,11 @@ public class Controller {
         model.limpiarProyecto();
     }
     
-    public void Relacionar(String a, String b) throws Exception{
+    public void relacionar(String a, String b) throws Exception{
         model.relacionar(a, b);
+    }
+    
+    public void moveractividad(String a, int x,int y){
+        model.moveractividad(a, x, y);
     }
 }

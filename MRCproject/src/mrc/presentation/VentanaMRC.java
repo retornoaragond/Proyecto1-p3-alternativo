@@ -1,21 +1,23 @@
 package mrc.presentation;
 
-import com.sun.webkit.graphics.GraphicsDecoder;
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import static java.awt.event.MouseEvent.BUTTON1;
 import java.awt.geom.Ellipse2D;
 import static java.lang.Math.abs;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import mrc.logic.Actividad;
 
@@ -27,11 +29,14 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
 
     Model model;
     Controller controller;
-    int R = 20;
-    int D = 40;
+    int R = 25;
+    int D = 50;
+    int Dx = 0;
+    int Dy = 0;
     int cont = 1;
+    int dibujado = 0;
     Actividad seleccionada = null;
-    Actividad movida = null;
+    Actividad act_movida = null;
     private final FileNameExtensionFilter filter
             = new FileNameExtensionFilter(
                     "Archivos .xml", "xml"
@@ -124,39 +129,25 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    preAgregarActividad(evt.getX(), evt.getY());
-                } else {
-                    if (seleccionada == null) {
-                        seleccionada = seleccionar(evt.getX(), evt.getY());
-                        if (seleccionada != null) {
-                            System.out.println("Actividad " + seleccionada.getName());
-                            setTitle("salida " + seleccionada.getName());
-                        } else {
-                            setTitle("MRC");
-                        }
+                if (evt.getButton() == BUTTON1) {
+                    if (evt.getClickCount() == 2) {
+                        agregarActividad(evt.getX(), evt.getY());
                     } else {
-                        Actividad temp = seleccionar(evt.getX(), evt.getY());
-                        if (temp != null) {
-                            try {
-                                System.out.println("Actividad " + temp.getName());
-                                controller.Relacionar(seleccionada.getName(), temp.getName());
-                                setTitle("entrada " + temp.getName());
-                                seleccionada = null;
-                                repaint();
-                            } catch (Exception ex) {
-                                //generar ventanita del error
-                                JOptionPane.showMessageDialog(null, ex.getMessage());
-                                System.out.println(ex.getMessage());
-                                seleccionada = null;
-                                repaint();
-                            }
+                        if (seleccionada == null) {
+                            selec_actividad(evt.getX(), evt.getY());
                         } else {
-                            seleccionada = null;
-                            setTitle("MRC");
-                            repaint();
+                            selec_relacion(evt.getX(), evt.getY());
                         }
                     }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent evt) {
+                act_movida = seleccionar(evt.getX(), evt.getY());
+                if (act_movida != null) {
+                    Dx = act_movida.getX() - evt.getX();
+                    Dy = act_movida.getY() - evt.getY();
                 }
             }
         });
@@ -166,20 +157,52 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
                 if (seleccionada != null) {
                     repaint();
                 }
-
             }
 
             @Override
             public void mouseDragged(MouseEvent evt) {
-                movida = seleccionar(evt.getX(), evt.getY());
-                if (movida != null) {
-                    setTitle("Moviendo: " + movida.getName());
-                    movida.setX(evt.getX());
-                    movida.setY(evt.getY());
+                if (act_movida != null) {
+                    setTitle("Moviendo: " + act_movida.getName());
+                    moveCmouse(act_movida, evt.getX(), evt.getY());
+                    repaint();
                 }
-                repaint();
             }
         });
+    }
+
+    public void selec_actividad(int x, int y) {
+        seleccionada = seleccionar(x, y);
+        if (seleccionada != null) {
+            System.out.println("Actividad " + seleccionada.getName());
+            setTitle("salida " + seleccionada.getName());
+            repaint();
+        } else {
+            setTitle("MRC");
+            repaint();
+        }
+    }
+
+    public void selec_relacion(int x, int y) {
+        Actividad temp = seleccionar(x, y);
+        if (temp != null) {
+            try {
+                System.out.println("Actividad " + temp.getName());
+                controller.relacionar(seleccionada.getName(), temp.getName());
+                setTitle("entrada " + temp.getName());
+                seleccionada = null;
+                repaint();
+            } catch (Exception ex) {
+                //generar ventanita del error
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+                System.out.println(ex.getMessage());
+                seleccionada = null;
+                repaint();
+            }
+        } else {
+            seleccionada = null;
+            setTitle("MRC");
+            repaint();
+        }
     }
 
     public Actividad seleccionar(int x, int y) {
@@ -193,7 +216,7 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
         return null;
     }
 
-    public void preAgregarActividad(int x, int y) {
+    public void agregarActividad(int x, int y) {//
         JTextField id = new JTextField();
         JTextField duracion = new JTextField();
         Object[] message = {"Id:", id, "Duracion:", duracion};
@@ -203,19 +226,24 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
             if (option == JOptionPane.OK_OPTION) {
                 try {
                     Integer.parseInt(duracion.getText());
+                    controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
+                    er = false;
                 } catch (NumberFormatException e) {
                     er = true;
                     JOptionPane.showMessageDialog(null,
                             "La duracion debe ser un numero.");
-                    System.out.println("error la duracion debe ser un numero");
-                }
-                try {
-                    controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
-                    er = false;
+                    System.out.println("Error al tratar de agregar una actividad:\n La duracion debe ser un numero");
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null,
-                            "No se puede crear la activadad.");
-                    System.out.println("No se puede crear la activadad");
+                    er = true;
+                    if ("1".equals(ex.getMessage())) {
+                        JOptionPane.showMessageDialog(null,
+                                "Error al tratar de agregar una actividad:\n Ya existe una actividad con el mismo ID");
+                        System.out.println("Error al tratar de agregar una actividad: Ya existe una actividad con el mismo ID");
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Error al tratar de agregar una actividad:\n La duracion debe ser mayor que 0");
+                        System.out.println("Error al tratar de agregar una actividad: La duracion debe ser mayor que cero");
+                    }
                 }
             } else {
                 er = false;
@@ -237,8 +265,8 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
                 controller.limpiarProyecto();
                 controller.abrirarchivo(ruta_Archivo_open);
             } catch (Exception ex) {
-              JOptionPane.showMessageDialog(null,
-                            "No se puede crear la activadad.");  
+                JOptionPane.showMessageDialog(null,
+                        "No se puede cargar el proyecto");
             }
         }
     }
@@ -252,69 +280,94 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
             ruta_Archivo_save = file_open.getSelectedFile().toString();
         }
         if (ruta_Archivo_save != null) {
-            System.out.println("ruta guardar: " + ruta_Archivo_save);
-            controller.guardarArchivo(ruta_Archivo_save);
+            if (".xml".equals(ruta_Archivo_save.substring(ruta_Archivo_save.length() - 4))) {
+                System.out.println("ruta guardar: " + ruta_Archivo_save);
+                controller.guardarArchivo(ruta_Archivo_save);
+            } else {
+                ruta_Archivo_save = ruta_Archivo_save + ".xml";
+                System.out.println("ruta guardar: " + ruta_Archivo_save);
+                controller.guardarArchivo(ruta_Archivo_save);
+            }
         }
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        for (Actividad a : model.proyecto.getActividades().values()) {
-            if (a.getHolgura() == 0) {
-                g.setColor(Color.red);
-            } else {
-                g.setColor(Color.black);
-            }
-            g.drawOval(a.getX() - R, a.getY() - R, D, D);
-            g.drawString(a.getName() + "(" + a.getDtime() + ")",
-                    a.getX() - R + 5, a.getY() + 5);
-        }
-        for (Actividad a : model.proyecto.getActividades().values()) {
-            for (Actividad act : a.getSalidas()) {
-                if (!("n_f".equals(act.getName()))) {
-                    if (a.getHolgura() == 0 && act.getHolgura() == 0) {
-                        g.setColor(Color.red);
-                    } else {
-                        g.setColor(Color.black);
-                    }
-                    relaciones(a, act, g);
+        Graphics2D g2 = (Graphics2D) g;
+        //para manipular el renderizado 
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.setStroke(new BasicStroke(3));
+        g2.setFont(new Font(g.getFont().getFontName(), Font.BOLD, 16));
+        ///////////////////////////////////////////////////////////////
+        model.proyecto.getActividades().values().stream().map((a) -> {
+            if (a != seleccionada) {
+                if (a.getHolgura() == 0) {
+                    g2.setColor(Color.red);
+                } else {
+                    g2.setColor(Color.black);
                 }
+            } else {
+                g2.setColor(Color.green);
             }
-        }
-        prerelacion(g);
+            return a;
+        }).map((a) -> {
+            g2.drawOval(a.getX() - R, a.getY() - R, D, D);
+            return a;
+        }).forEachOrdered((a) -> {
+            g2.drawString(a.getName() + "(" + a.getDtime() + ")",
+                    a.getX() - R + 5, a.getY() + 5);
+        });
+        model.proyecto.getActividades().values().forEach((a) -> {
+            a.getSalidas().stream().filter((act) -> (!("n_f".equals(act.getName())))).map((act) -> {
+                if (a.getHolgura() == 0 && act.getHolgura() == 0) {
+                    g2.setColor(Color.red);
+                } else {
+                    g2.setColor(Color.blue);
+                }
+                return act;
+            }).forEachOrdered((act) -> {
+                relaciones(a, act, g2);
+            });
+        });
+        prerelacion(g2);
     }
 
-    public void relaciones(Actividad a, Actividad b, Graphics g) {
-        int BX = a.getX() - b.getX();
-        int BY = a.getY() - b.getY();
-        int BH = (int) Math.sqrt(Math.pow(abs(BX), 2) + Math.pow(abs(BY), 2));
-        int abx = R * abs(BX) / BH;
-        int aby = R * abs(BY) / BH;
-        int c = 3;
-        if (BY < 0) {
-            if (BX < 0) {
-                g.drawLine(a.getX() + abx, a.getY() + aby, b.getX() - abx, b.getY() - aby);
-                g.fillOval(b.getX() - abx - c, b.getY() - aby - c, 6, 6);
+    public void relaciones(Actividad a, Actividad b, Graphics2D g2) {
+        double x1 = a.getX();
+        double y1 = a.getY();
+        double x2 = b.getX();
+        double y2 = b.getY();
+        int c = 5;
+        x1 = (x1 + (((x2 - x1) * R) / Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))));
+        y1 = (y1 + (((y2 - y1) * R) / Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))));
+        x2 = (x2 - (((x2 - x1) * R) / Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))));
+        y2 = (y2 - (((y2 - y1) * R) / Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))));
+        g2.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+        g2.fillOval((int) (x2 - c), (int) (y2 - c), c * 2, c * 2);
+    }
+
+    public void moveCmouse(Actividad a, int mx, int my) {
+        if (Dy < 0) {
+            if (Dx < 0) {
+                controller.moveractividad(a.getName(), mx - abs(Dx), my - abs(Dy));
             } else {
-                g.drawLine(a.getX() - abx, a.getY() + aby, b.getX() + abx, b.getY() - aby);
-                g.fillOval(b.getX() + abx - c, b.getY() - aby - c, 6, 6);
+                controller.moveractividad(a.getName(), mx + abs(Dx), my - abs(Dy));
             }
         } else {
-            if (BX < 0) {
-                g.drawLine(a.getX() + abx, a.getY() - aby, b.getX() - abx, b.getY() + aby);
-                g.fillOval(b.getX() - abx - c, b.getY() + aby - c, 6, 6);
+            if (Dx < 0) {
+                controller.moveractividad(a.getName(), mx - abs(Dx), my + abs(Dy));
             } else {
-                g.drawLine(a.getX() - abx, a.getY() - aby, b.getX() + abx, b.getY() + aby);
-                g.fillOval(b.getX() + abx - c, b.getY() + aby - c, 6, 6);
+                controller.moveractividad(a.getName(), mx + Dx, my + abs(Dy));
             }
         }
     }
 
-    public void prerelacion(Graphics g) {
+    public void prerelacion(Graphics2D g2) {
         if (seleccionada != null) {
-            g.setColor(Color.green);
-            g.drawLine(seleccionada.getX(), seleccionada.getY(), this.getMousePosition().x, this.getMousePosition().y);
+            g2.setColor(Color.green);
+            g2.drawLine(seleccionada.getX(), seleccionada.getY(), this.getMousePosition().x, this.getMousePosition().y);
         }
     }
 
@@ -328,13 +381,17 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//
+//                }
+//            }
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+            JFrame.setDefaultLookAndFeelDecorated(true);
 
-                }
-            }
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(VentanaMRC.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -365,7 +422,6 @@ public class VentanaMRC extends javax.swing.JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         this.repaint();
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -216,17 +216,21 @@ public class Proyecto {
     }
 
     public void agregarActividad(Actividad a) throws Exception {
-        if (!actividades.isEmpty()) {
-            if (!existe(a.getName())) {
+        if (a.getDtime() > 0) {
+            if (!actividades.isEmpty()) {
+                if (!existe(a.getName())) {
+                    actividades.put(a.getName(), a);
+                    this.recalcula();
+
+                } else {
+                    throw new Exception("1");
+                }
+            } else {
                 actividades.put(a.getName(), a);
                 this.recalcula();
-
-            } else {
-                throw new Exception("Error al tratar de agregar una actividad: ya existe una actividad con el mismo ID");
             }
         } else {
-            actividades.put(a.getName(), a);
-            this.recalcula();
+            throw new Exception("2");
         }
     }
 

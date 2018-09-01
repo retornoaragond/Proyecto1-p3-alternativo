@@ -1,6 +1,5 @@
 package mrc.presentation;
 
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import mrc.data.Archivos;
@@ -38,7 +37,8 @@ public class Model extends Observable {
 
     public void agregarActividad(Actividad a) throws Exception {
         proyecto.agregarActividad(a);
-        //actualizar las rutas
+        System.out.print("\n" + proyecto.rutaCritica() + "\n\n");// se imprime lo cargado
+        System.out.print(proyecto.toString());// se imprime lo cargado
         setChanged();
         notifyObservers(null);
     }
@@ -63,6 +63,15 @@ public class Model extends Observable {
     public void relacionar(String a, String b) throws Exception{
         
         this.proyecto.relacionar(a, b);
+        setChanged();
+        notifyObservers(null);
+        System.out.print("\n" + proyecto.rutaCritica() + "\n\n");// se imprime lo cargado
+        System.out.print(proyecto.toString());// se imprime lo cargado
+    }
+    
+    public void moveractividad(String a, int x,int y){
+        this.proyecto.getActividades().get(a).setX(x);
+        this.proyecto.getActividades().get(a).setY(y);
         setChanged();
         notifyObservers(null);
     }
